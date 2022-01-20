@@ -1,7 +1,7 @@
 #include "Header.h"
 
 
-enum typeOfComponents{empty, block, well, wellBlocker, lamp, lampLocation, Roadblock, Exit, character};
+enum typeOfComponents{empty, block, well, wellBlocker, lamp, lampLocation, Roadblock, Exit, SG, SH, JW, JB, MS, IL, WG, JS};
 enum ORDER{beforeOrAfter, afterMovement, movementOrFunctionality, simultaneous};
 enum Direction{north, south, northEast, southEast, northWest, southWest};
 struct Character
@@ -21,34 +21,32 @@ struct Character JohnWatson = {"JW 0", "\033[0;33mJW\033[0;38m", false, 3, after
 struct Character JeremyBert = {"JB", "\033[0;36mJB\033[0;38m", false, 3, beforeOrAfter};
 struct Character MissStealthy = {"MS", "\033[0;32mMS\033[0;38m", false, 3, simultaneous};
 struct Character InspectorLestrade = {"IL", "\033[0;34mIN\033[0;38m", false, 3, beforeOrAfter};
-struct Character SirWilliamGull = {"SG", "\033[0;35mSW\033[0;38m", false, 3, movementOrFunctionality};
-struct Character JohnSmith = {"JW", "\033[0;33mJS\033[0;38m", false, 3, beforeOrAfter};
+struct Character SirWilliamGull = {"WG", "\033[0;35mWG\033[0;38m", false, 3, movementOrFunctionality};
+struct Character JohnSmith = {"JS", "\033[0;33mJS\033[0;38m", false, 3, beforeOrAfter};
 
 
 typedef struct PartMaP
 {
     int type;
     char firstLine[25];
-    char secondLine[25];
-    char thirdLine[40];
-    char fourthLine[25];
-    char fifthLine[25];
+    char secondLine[40];
+    char thirdLine[25];
     int vertical;
     int horizontal;
-    struct Character *characters;
 }part;
 
 
-void board(int horizontal, int vertical);
+void board(part** map, int horizontal, int vertical);
 int menu();
 part** newGame();
 
 char blc = 254;
 int main()
 {
-    board(5, 10);
 
-    // part **map = newGame();
+    part **map = newGame();
+    board(map, 5, 4);
+
     // for(int i = 0; i < 9;i++)
     // {
     //     for(int j = 0; j < 13; j++)
@@ -57,6 +55,26 @@ int main()
     //     printf("\n");
     // }
 
+    // printf("  ______\n");
+    // printf(" /      \\\n");
+    // printf("/ ");
+    // printYellowHighLight();
+    // printf("      ");
+    // resetColor();
+    // printf(" \\\n");
+    // printf("\\ ");
+    // printYellowHighLight();
+    // printf("      ");
+    // resetColor();
+    // printf(" /\n");
+    // printf(" \\______/");
+
+
+    // printf("  ______\n");
+    // printf(" /  __  \\\n");
+    // printf("/  /XX\\  \\\n");
+    // printf("\\  \\XX/  /\n");
+    // printf(" \\______/\n");
     // int choice = menu();
 
     // switch (choice)
@@ -80,25 +98,406 @@ int main()
     // }
 
     // printf("  ______\n");
-    // printf(" /\033[0;33m//\033[0;38m    \\\n");
-    // printf("/\033[0;33m//\033[0;38m      \\\n");
-    // printf("\\        /\n");
+    // printf(" / \033[0;33m __\033[0;38m  \\\n");
+    // printf("/  \033[0;33m/\033[0;38mJH\033[0;33m\\\033[0;38m  \\\n");
+    // printf("\\  \033[0;33m\\__/\033[0;38m  /\n");
     // printf(" \\______/\n");
+}
 
-    // for(int i = 0; i < 500; i++)
-    //     printf("\n %d %c", i, i); 
+
+
+
+// enum typeOfComponents{empty, block, well, wellBlocker, lamp, lampLocation, Roadblock, Exit, character};
+
+void reset(part** map, int horizontal, int vertical) // این تابع هر بار کل نقشه را بررسی می کند و هربار نقشه را پس از تغییر چاپ می کند.
+{
+    for(int i = 0; i < horizontal; i++)
+    {
+        for(int j = 0; j < vertical; j++)
+        {
+            if(map[i][j].type == 0) //محل خالی 
+            {
+                strcmp(map[i][j].firstLine, "      ");
+                strcmp(map[i][j].secondLine, "        ");
+                strcmp(map[i][j].thirdLine, "        ");
+            }
+            else if(map[i][j].type == 1) //محل های بسته
+            {                
+                strcmp(map[i][j].firstLine, "\033[0;47m      \033[0;38m");
+                strcmp(map[i][j].secondLine, "\033[0;47m        \033[0;38m");
+                strcmp(map[i][j].thirdLine, "\033[0;47m        \033[0;38m");
+            }
+            else if(map[i][j].type == 2) //چاه
+            {                
+                strcmp(map[i][j].firstLine, "  __  ");
+                strcmp(map[i][j].secondLine, "  /  \\  ");
+                strcmp(map[i][j].thirdLine, "  \\__/  ");
+            }
+            else if(map[i][j].type == 3) // درپوش چاه
+            {                
+                strcmp(map[i][j].firstLine, "  __  ");
+                strcmp(map[i][j].secondLine, "  /\033[0;47m  \\  \033[0;38m");
+                strcmp(map[i][j].thirdLine, "  \\\033[0;47m__/  \033[0;38m");
+            }
+            else if(map[i][j].type == 4) // چراغ
+            {                
+                strcmp(map[i][j].firstLine, "      ");
+                strcmp(map[i][j].secondLine, "  \033[0;33m****\033[0;38m  ");
+                strcmp(map[i][j].thirdLine, "  \033[0;33m****\033[0;38m  ");
+            }
+            else if(map[i][j].type == 5) // محل قرار گیری چراغ
+            {                
+                strcmp(map[i][j].firstLine, "      ");
+                strcmp(map[i][j].secondLine, "  ****  ");
+                strcmp(map[i][j].thirdLine, "  ****  ");
+            }
+            else if(map[i][j].type == 6) // مسدود کننده محل خروج
+            {
+                strcmp(map[i][j].firstLine, "      ");
+                strcmp(map[i][j].secondLine, "\033[0;41m        \033[0;38m");
+                strcmp(map[i][j].thirdLine, "\033[0;41m        \033[0;38m/");
+            }
+            else if(map[i][j].type == 7) // خروجی
+            {                
+                strcmp(map[i][j].firstLine, "      ");
+                strcmp(map[i][j].secondLine, "  EXIT  ");
+                strcmp(map[i][j].thirdLine, "        ");
+            }
+            else if(map[i][j].type == 8) //SG 
+            {
+                char current[25] = "   ";
+                strcat(current, SergentGoodley.nameForPrint);
+                strcat(current, "   ");
+
+                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].secondLine, current);
+                strcmp(map[i][j].thirdLine, "        ");
+            }
+            else if(map[i][j].type == 9) //SH 
+            {
+                char current[25] = "   ";
+                strcat(current, SherlockHolmes.nameForPrint);
+                strcat(current, "   ");
+
+                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].secondLine, current);
+                strcmp(map[i][j].thirdLine, "        ");
+            }
+            else if(map[i][j].type == 10) //JW 
+            {
+                char current[25] = "   ";
+                strcat(current, JohnWatson.nameForPrint);
+                strcat(current, "   ");
+
+                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].secondLine, current);
+                strcmp(map[i][j].thirdLine, "        ");
+            }
+            else if(map[i][j].type == 11) //JB 
+            {
+                char current[25] = "   ";
+                strcat(current, JeremyBert.nameForPrint);
+                strcat(current, "   ");
+
+                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].secondLine, current);
+                strcmp(map[i][j].thirdLine, "        ");
+            }
+            else if(map[i][j].type == 12) //MS 
+            {
+                char current[25] = "   ";
+                strcat(current, MissStealthy.nameForPrint);
+                strcat(current, "   ");
+
+                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].secondLine, current);
+                strcmp(map[i][j].thirdLine, "        ");
+            }
+            else if(map[i][j].type == 13) //IL 
+            {
+                char current[25] = "   ";
+                strcat(current, InspectorLestrade.nameForPrint);
+                strcat(current, "   ");
+
+                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].secondLine, current);
+                strcmp(map[i][j].thirdLine, "        ");
+            }        
+            else if(map[i][j].type == 14) //WG
+            {
+                char current[25] = "   ";
+                strcat(current, SirWilliamGull.nameForPrint);
+                strcat(current, "   ");
+
+                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].secondLine, current);
+                strcmp(map[i][j].thirdLine, "        ");
+            }            
+            else if(map[i][j].type == 15) //JS 
+            {
+                char current[25] = "   ";
+                strcat(current, JohnSmith.nameForPrint);
+                strcat(current, "   ");
+
+                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].secondLine, current);
+                strcmp(map[i][j].thirdLine, "        ");
+            }
+            // else if(map[i][j].type == 8) // کاراکتر
+            // {
+            //     if(strncmp(map[i][j].characters->name, "JW", 2) != 0)
+            //     {
+            //         char current[25] = "   ";
+            //         strcat(current, map[i][j].characters->nameForPrint);
+            //         strcat(current, "   ");
+
+            //         strcmp(map[i][j].firstLine, "      ");
+            //         strcpy(map[i][j].secondLine, current);
+            //         strcmp(map[i][j].thirdLine, "        ");
+
+            //     }
+            //     else if // کاراکتر جان واتسون به دلیل داشتن فانوس در برای روشنایی یک راستا،تفاوتی در چاپ کردن با دیگر کاراکتر ها دارد،به همین خاطر از این دو شرط استفاده شده است.
+            //     {
+            //         int direction = map[i][j].characters->name[3] - 48;
+
+            //         if(direction == north)
+            //         { 
+            //             strcmp(map[i][j].firstLine, "  \033[0;33m __\033[0;38m  ");
+            //             strcmp(map[i][j].secondLine, map[i][j].characters->nameForPrint);
+            //             strcmp(map[i][j].thirdLine, "        ");
+            //         }
+            //         else if(direction == south)
+            //         {
+            //             strcmp(map[i][j].firstLine, "      ");
+            //             strcmp(map[i][j].secondLine, map[i][j].characters->nameForPrint);
+            //             strcmp(map[i][j].thirdLine, "  \033[0;33m __\033[0;38m  ");
+            //         }
+            //         else if(direction == northEast)
+            //         {
+            //             strcmp(map[i][j].firstLine, "      ");
+            //             strcmp(map[i][j].secondLine, "   ");
+            //             strcat(map[i][j].secondLine, map[i][j].characters->nameForPrint);
+            //             strcat(map[i][j].secondLine, "\033[0;33m\\\033[0;38m  ");
+            //             strcmp(map[i][j].thirdLine, "        ");
+            //         }
+            //         else if(direction == southEast)
+            //         {
+            //             strcmp(map[i][j].firstLine, "      ");
+            //             strcmp(map[i][j].secondLine, map[i][j].characters->nameForPrint);
+            //             strcmp(map[i][j].thirdLine, "     \033[0;33m/\033[0;38m  ");
+            //         }
+            //         else if(direction == northWest)
+            //         {
+            //             strcmp(map[i][j].firstLine, "      ");
+            //             strcmp(map[i][j].secondLine, "  \033[0;33m/\033[0;38m");
+            //             strcat(map[i][j].secondLine, map[i][j].characters->nameForPrint);
+            //             strcat(map[i][j].secondLine, "   ");
+            //             strcmp(map[i][j].thirdLine, "        ");
+            //         }
+            //         else
+            //         {
+            //             strcmp(map[i][j].firstLine, "      ");
+            //             strcmp(map[i][j].secondLine, map[i][j].characters->nameForPrint);
+            //             strcmp(map[i][j].thirdLine, "  \033[0;33m\\\033[0;38m     ");
+            //         }
+            //     }
+            // }            
+        }
+    }
+}
+
+part** newGame()
+{
+    int horizontal,vertical;
+    int type;
+    FILE* NewGame = fopen("NewGame.txt", "r");
+    
+    fscanf(NewGame, "%d %d", &horizontal, &vertical);
+    fgetc(NewGame);
+    part **map = (part**)malloc(horizontal * sizeof(part*));
+    for(int i = 0; i < horizontal; i++)
+    {
+        map[i] = (part*)malloc(vertical * sizeof(part));
+        for(int j = 0; j < vertical; j++)
+        {
+            fscanf(NewGame, "%d", &map[i][j].type);
+            map[i][j].horizontal = i;
+            map[i][j].vertical = j;
+        }
+    }
+
+    return map;
+}
+
+
+void board(part** map, int horizontal, int vertical)
+{
+    int z = 65;
+
+    reset(map, horizontal, vertical);
+    system("cls");
+    if(vertical % 2 == 0)
+    {
+        for(int j = 0; j < vertical / 2; j++)
+        {
+            printf("          ");
+
+            printf("______");
+        }
+        printf("\n ");
+        
+        for(int j = 0; j < vertical / 2; j++)
+        {
+            printf("        ");
+
+            printf("/%s\\" ,map[0][2 * j + 1].firstLine); // سطر اول اندیس های فرد
+        }
+        printf("\n  ");
+        for(int j = 0; j < vertical / 2; j++)
+        {
+            printf("______");
+
+            printf("/        \\");// سطر دوم اندیس های فرد
+        }
+        printf("\n");
+
+        for(int i = 0; i < horizontal; i++)
+        {
+            printf(" ");
+            for(int j = 0; j < vertical / 2; j++)
+            {
+                printf("/      \\"); // سطر اول اندیس های زوج
+                printf("        "); // سطر سوم اندیس های فرد
+            }
+            printf("/\n");
+
+            for(int j = 0; j < vertical / 2; j++)
+            {
+                printf("/        \\"); // سطر دوم اندیس های زوج
+                printf("______");
+            }
+            printf("/\n");
+
+            for(int j = 0; j < vertical / 2; j++)
+            {
+                printf("\\        /"); // سطر سوم اندیس های زوج
+
+                printf("      ");
+
+            }
+            if(i != horizontal - 1)
+                printf("\\");
+            printf("\n ");
+
+
+            for(int j = 0;j < vertical / 2; j++)
+            {
+                printf("\\______/");
+
+                printf("        ");
+
+            }
+            if(i != horizontal - 1)
+                printf("\\");
+            printf("\n");
+        }
+    }
+    
+    else
+    {
+        for(int j = 0; j < vertical / 2; j++)
+        {
+            printf("          ");
+            printf("______");
+        }
+        printf("\n ");
+
+        for(int j = 0; j < vertical / 2; j++)
+        {
+            printf("        ");
+            printf("/      \\"); // سطر اول اندیس های فرد
+        }
+        printf("\n");
+
+        printf("  ______");
+        for(int j = 0; j < vertical / 2; j++)
+        {
+            printf("/        \\"); // سطر دوم اندیس های فرد
+
+            printf("______");
+        }
+        printf("\n");
+
+
+        for(int i = 0; i < horizontal; i++)
+        {
+            printf(" /      \\"); // سطر اول اندیس های زوج
+            for(int j = 0; j < vertical / 2; j++)
+            {
+                printf("        "); // سطر سوم اندیس های فرد
+                printf("/      \\"); // سطر اول اندیس های زوج
+            }
+            printf("\n");
+
+            printf("/        \\"); // سطر دوم اندیس های زوج
+            for(int j = 0; j < vertical / 2; j++)
+            {
+                printf("______");
+
+                printf("/        \\"); // سطر دوم اندیس های زوج
+            }
+            printf("\n");
+
+            printf("\\        /"); // سطر سوم اندیس های زوج
+            for(int j = 0; j < vertical / 2; j++)
+            {
+                printf("      ");
+
+                printf("\\        /"); // سطر سوم اندیس های زوج
+            }
+            printf("\n");
+
+            printf(" \\______/");
+            for(int j = 0;j < vertical / 2; j++)
+            {
+                printf("        ");
+
+                printf("\\______/");
+            }
+            printf("\n");
+        }
+    }
+
 
 
 
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int menu()
 {
-    // for(int i = 0; i < 5; i++)
-    //     printf("\n\n");
-
     system("cls");
+
     printRed();
     printf("\t\t\t\t\t\t\t\t\t              Mr Jack Board Game         \n\n");
     printGreen();
@@ -160,379 +559,6 @@ int menu()
     printf("\n\t\t\t\t\t\t\t\t\t   Plesse Press ENTER key to continue...");
     getchar();
     getchar();
-    
 
     menu();
-}
-
-// enum typeOfComponents{empty, block, well, wellBlocker, lamp, lampLocation, Roadblock, Exit, character};
-
-void reset(part** map, int horizontal, int vertical) // این تابع هر بار کل نقشه را بررسی می کند و هربار نقشه را پس از تغییر چاپ می کند.
-{
-    for(int i = 0; i < horizontal; i++)
-    {
-        for(int j = 0; j < vertical; j++)
-        {
-            if(map[i][j].type == 0) //محل خالی 
-            {
-                strcmp(map[i][j].firstLine, "______");
-                strcmp(map[i][j].secondLine, "      ");
-                strcmp(map[i][j].thirdLine, "        ");
-                strcmp(map[i][j].fourthLine, "        ");
-                strcmp(map[i][j].fifthLine, "______");
-            }
-            else if(map[i][j].type == 1) //محل های بسته
-            {
-                strcmp(map[i][j].firstLine, "______");
-                strcmp(map[i][j].secondLine, "\033[0;47m      \033[0;38m");
-                strcmp(map[i][j].thirdLine, "\033[0;47m        \033[0;38m");
-                strcmp(map[i][j].fourthLine, "\033[0;47m        \033[0;38m");
-                strcmp(map[i][j].fifthLine, "\033[0;47m______\033[0;38m/");
-            }
-            else if(map[i][j].type == 2) //چاه
-            {
-                strcmp(map[i][j].firstLine, "______");
-                strcmp(map[i][j].secondLine, "  __  ");
-                strcmp(map[i][j].thirdLine, "  /  \\  ");
-                strcmp(map[i][j].fourthLine, "  \\__/  ");
-                strcmp(map[i][j].fifthLine, "______");
-            }
-            else if(map[i][j].type == 3) // درپوش چاه
-            {
-                strcmp(map[i][j].firstLine, "______");
-                strcmp(map[i][j].secondLine, "  __  ");
-                strcmp(map[i][j].thirdLine, "  /\033[0;47m  \\  \033[0;38m");
-                strcmp(map[i][j].fourthLine, "  \\\033[0;47m__/  \033[0;38m");
-                strcmp(map[i][j].fifthLine, "______");
-            }
-            else if(map[i][j].type == 4) // چراغ
-            {
-                strcmp(map[i][j].firstLine, "______");
-                strcmp(map[i][j].secondLine, "      ");
-                strcmp(map[i][j].thirdLine, "  \033[0;33m****\033[0;38m  ");
-                strcmp(map[i][j].fourthLine, "  \033[0;33m****\033[0;38m  ");
-                strcmp(map[i][j].fifthLine, "______");
-
-            }
-            else if(map[i][j].type == 5) // محل قرار گیری چراغ
-            {
-                strcmp(map[i][j].firstLine, "______");
-                strcmp(map[i][j].secondLine, "      ");
-                strcmp(map[i][j].thirdLine, "  ****  ");
-                strcmp(map[i][j].fourthLine, "  ****  ");
-                strcmp(map[i][j].fifthLine, "______");
-            }
-            else if(map[i][j].type == 6) // مسدود کننده محل خروج
-            {
-                strcmp(map[i][j].firstLine, "______");
-                strcmp(map[i][j].secondLine, "      ");
-                strcmp(map[i][j].thirdLine, "\033[0;41m        \033[0;38m");
-                strcmp(map[i][j].fourthLine, "\033[0;41m        \033[0;38m/");
-                strcmp(map[i][j].fifthLine, "______");
-            }
-            else if(map[i][j].type == 7) // خروجی
-            {
-                if(i == 0)
-                {
-                    strcmp(map[i][j].firstLine, "_|  |_");
-                    strcmp(map[i][j].secondLine, " |  | ");
-                    strcmp(map[i][j].thirdLine, "        ");
-                    strcmp(map[i][j].fourthLine, "        ");
-                    strcmp(map[i][j].fifthLine, "______");
-                }
-                else
-                {
-                    strcmp(map[i][j].firstLine, "______");
-                    strcmp(map[i][j].secondLine, "      ");
-                    strcmp(map[i][j].thirdLine, "        ");
-                    strcmp(map[i][j].fourthLine, "  |  |  ");
-                    strcmp(map[i][j].fifthLine, "_|  |_");
-                }
-            }
-            else if(map[i][j].type == 8) // کاراکتر
-            {
-                if(strncmp(map[i][j].characters->name, "JW", 2) != 0)
-                {
-                    char current[25] = "   ";
-                    strcat(current, map[i][j].characters->nameForPrint);
-                    strcat(current, "   ");
-
-                    strcmp(map[i][j].firstLine, "______");
-                    strcmp(map[i][j].secondLine, "      ");
-                    strcpy(map[i][j].thirdLine, current);
-                    strcmp(map[i][j].fourthLine, "        ");
-                    strcmp(map[i][j].fifthLine, "______");
-                }
-                else // کاراکتر جان واتسون به دلیل داشتن فانوس در برای روشنایی یک راستا،تفاوتی در چاپ کردن با دیگر کاراکتر ها دارد،به همین خاطر از این دو شرط استفاده شده است.
-                {
-                    int direction = map[i][j].characters->name[3];
-
-
-                    if(direction == north)
-                    {
-                        char current[40] = "   ";
-                        strcat(current, map[i][j].characters->nameForPrint);
-                        strcat(current, "   ");
-
-                        strcmp(map[i][j].firstLine, "\033[0;33m______\033[0;38m");
-                        strcmp(map[i][j].secondLine, "\033[0;33m______\033[0;38m");
-                        strcpy(map[i][j].thirdLine, current);
-                        strcmp(map[i][j].fourthLine, "        ");
-                        strcmp(map[i][j].fifthLine, "______");
-                    }
-                    else if(direction == south)
-                    {
-                        char current[25] = "   ";
-                        strcat(current, map[i][j].characters->nameForPrint);
-                        strcat(current, "   ");
-                        strcmp(map[i][j].firstLine, "______");
-                        strcmp(map[i][j].secondLine, "      ");
-                        strcpy(map[i][j].thirdLine, current);
-                        strcmp(map[i][j].fourthLine, " \033[0;33m______\033[0;38m ");
-                        strcmp(map[i][j].fifthLine, "\033[0;33m______\033[0;38m");
-                    }
-                    else if(direction == northEast)
-                    {
-                        char current[25] = "   ";
-                        strcat(current, map[i][j].characters->nameForPrint);
-                        strcat(current, " \033[0;33m\\\\\033[0;38m");
-                        strcmp(map[i][j].firstLine, "______");
-                        strcmp(map[i][j].secondLine, "    \033[0;33m\\\\\033[0;38m");
-                        strcpy(map[i][j].thirdLine, current);
-                        strcmp(map[i][j].fourthLine, "        ");
-                        strcmp(map[i][j].fifthLine, "______");
-                    }
-                    else if(direction == southEast)
-                    {
-                        char current[25] = "   ";
-                        strcat(current, map[i][j].characters->nameForPrint);
-                        strcat(current, "   ");
-                        strcmp(map[i][j].firstLine, "______");
-                        strcmp(map[i][j].secondLine, "      ");
-                        strcpy(map[i][j].thirdLine, current);
-                        strcmp(map[i][j].fourthLine, "       \033[0;33m//\033[0;38m");
-                        strcmp(map[i][j].fifthLine, "____\033[0;33m//\033[0;38m");
-                    }
-                    else if(direction == northWest)
-                    {
-                        char current[25] = "\033[0;33m//\033[0;38m ";
-                        strcat(current, map[i][j].characters->nameForPrint);
-                        strcat(current, "   ");
-                        strcmp(map[i][j].firstLine, "______");
-                        strcmp(map[i][j].secondLine, "\033[0;33m//\033[0;38m    ");
-                        strcpy(map[i][j].thirdLine, current);
-                        strcmp(map[i][j].fourthLine, "        ");
-                        strcmp(map[i][j].fifthLine, "______");
-                    }
-                    else
-                    {
-                        char current[25] = "   ";
-                        strcat(current, map[i][j].characters->nameForPrint);
-                        strcat(current, "   ");
-                        strcmp(map[i][j].firstLine, "______");
-                        strcmp(map[i][j].secondLine, "      ");
-                        strcpy(map[i][j].thirdLine, current);
-                        strcmp(map[i][j].fourthLine, "\033[0;33m\\\\\033[0;38m      ");
-                        strcmp(map[i][j].fifthLine, "\033[0;33m\\\\\033[0;38m____");
-                    }
-                }
-            }            
-        }
-    }
-}
-
-part** newGame()
-{
-    int horizontal,vertical;
-    int type;
-    FILE* NewGame = fopen("NewGame.txt", "r");
-    
-    fscanf(NewGame, "%d %d", &horizontal, &vertical);
-    fgetc(NewGame);
-    part **map = (part**)malloc(horizontal * sizeof(part*));
-    for(int i = 0; i < horizontal; i++)
-    {
-        map[i] = (part*)malloc(vertical * sizeof(part));
-        for(int j = 0; j < vertical; j++)
-        {
-            fscanf(NewGame, "%d", &map[i][j].type);
-            map[i][j].horizontal = i;
-            map[i][j].vertical = j;
-        }
-    }
-
-    return map;
-}
-
-
-void board(int horizontal, int vertical)
-{
-    int z = 65;
-
-    system("cls");
-    if(1)
-    {
-        for(int j = 0; j < vertical / 2; j++)
-        {
-            printf("          ");
-
-            printf("______");
-        }
-        printf("\n");
-
-        for(int i = 0; i < horizontal; i++)
-        {
-            for(int j = 0; j < vertical / 2; j++)
-            {
-                if(i == 0 && j == 0)
-                {
-                    printf("         /");
-                    printf("      ");
-                    continue;
-                }
-                printf("\\        /");
-
-                printf("      ");
-            }
-            printf("\\\n ");
-
-            for(int j = 0; j < vertical / 2; j++)
-            {
-                if(i == 0 && j == 0)
-                {
-                    printf(" ______/");
-                    printf("        ");
-                    continue;
-                }
-                printf("\\______/");
-
-                printf("        ");
-            }
-            printf("\\\n ");
-
-            for(int j = 0; j < vertical / 2; j++)
-            {
-                printf("/      \\");
-
-                printf("        ");
-            }
-            printf("/\n");
-
-            for(int j = 0; j < vertical / 2; j++)
-            {
-
-                printf("/        \\");
-
-                printf("______");
-            }
-            printf("/\n");
-        }
-        for(int j = 0; j < vertical / 2; j++)
-        {
-
-            printf("\\        /");
-
-            printf("      ");
-        }
-        printf("\n ");
-        for(int j = 0; j < vertical / 2; j++)
-        {
-            
-            printf("\\______/");
-
-            printf("        ");
-        }
-    }
-    
-    // else
-    // {
-    //     for(int j = 0; j < vertical / 2; j++)
-    //     {
-    //         printf("          ");
-
-    //         printf("______");
-    //     }
-    //     printf("\n");
-
-
-    //     for(int i = 0; i < horizontal; i++)
-    //     {
-    //         for(int j = 0; j < vertical / 2; j++)
-    //         {
-    //             if(i == 0 && j == 0)
-    //             {
-    //                 printf("         /");
-    //                 printf("   2  ");
-    //                 continue;
-    //             }
-    //             printf("\\    %c   /", z++);
-
-    //             printf("   2  ");
-    //         }
-    //         if(i > 0)
-    //             printf("\\    %c   /\n ", z++);
-    //         else if(vertical != 1)
-    //             printf("\\\n ");
-
-
-
-    //         for(int j = 0; j < vertical / 2; j++)
-    //         {
-    //             if(i == 0 && j == 0)
-    //             {
-    //                 printf(" ______/");
-    //                 printf("    4   ");
-    //                 continue;
-    //             }
-    //             printf("\\______/");
-
-    //             printf("    4   ");
-    //         }
-            
-    //         if(horizontal == 1)
-    //             printf("  ______\n ");
-    //         else if(i > 0)
-    //             printf("\\______/\n ");
-    //         else
-    //             printf("\\______\n ");
-
-
-
-
-    //         for(int j = 0; j < vertical / 2; j++)
-    //         {
-    //             printf("/   %c  \\" , z++);
-
-    //             printf("    6   ");
-    //         }
-    //         printf("/   %c  \\\n" ,z);
-
-    //         for(int j = 0; j < vertical / 2; j++)
-    //         {
-
-    //             printf("/    %c   \\" ,z++);
-
-    //             printf("______");
-    //         }
-    //         printf("/    %c   \\\n" ,z++);
-    //     }
-
-        
-    //     for(int j = 0; j < vertical / 2; j++)
-    //     {
-
-    //         printf("\\    %c   /", z++);
-
-    //         printf("      ");
-    //     }
-    //     printf("\\    %c   /\n ", z++);
-    //     for(int j = 0; j < vertical / 2; j++)
-    //     {
-            
-    //         printf("\\______/");
-
-    //         printf("        ");
-    //     }
-    //     printf("\\______/");
-    // }
 }
