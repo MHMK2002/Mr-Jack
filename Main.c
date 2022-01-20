@@ -39,13 +39,25 @@ typedef struct PartMaP
 void board(part** map, int horizontal, int vertical);
 int menu();
 part** newGame();
+void reset(part** map, int horizontal, int vertical);
 
-char blc = 254;
+
+
+
 int main()
 {
 
     part **map = newGame();
-    board(map, 5, 4);
+    reset(map, 9, 13);
+    printf("Hello World!!\n");
+    board(map,9, 13);
+    // int k = 0;
+    // for(int i = 0; i < 9; i++)
+    // {
+    //     for(int j = 0; j < 13; j++)
+    //         if(map[i][j].type == 1)
+    //             printf("%d %s %s %s\n", k++, map[i][j].firstLine, map[i][j].secondLine, map[i][j].thirdLine);
+    // }
 
     // for(int i = 0; i < 9;i++)
     // {
@@ -117,61 +129,71 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
         {
             if(map[i][j].type == 0) //محل خالی 
             {
-                strcmp(map[i][j].firstLine, "      ");
-                strcmp(map[i][j].secondLine, "        ");
-                strcmp(map[i][j].thirdLine, "        ");
+                strcpy(map[i][j].firstLine, "      ");
+                map[i][j].firstLine[6] = '\0';
+
+                strcpy(map[i][j].secondLine, "        ");
+                map[i][j].secondLine[8] = '\0';
+
+                strcpy(map[i][j].thirdLine, "        ");
+                map[i][j].thirdLine[8] = '\0';
             }
             else if(map[i][j].type == 1) //محل های بسته
             {                
-                strcmp(map[i][j].firstLine, "\033[0;47m      \033[0;38m");
-                strcmp(map[i][j].secondLine, "\033[0;47m        \033[0;38m");
-                strcmp(map[i][j].thirdLine, "\033[0;47m        \033[0;38m");
+                strcpy(map[i][j].firstLine, "\033[0;47m      \033[0;38m");
+                map[i][j].firstLine[20] = '\0';
+
+                strcpy(map[i][j].secondLine, "\033[0;47m        \033[0;38m");
+                map[i][j].secondLine[22] = '\0';
+
+                strcpy(map[i][j].thirdLine, "\033[0;47m        \033[0;38m");
+                map[i][j].thirdLine[22] = '\0';
             }
             else if(map[i][j].type == 2) //چاه
             {                
-                strcmp(map[i][j].firstLine, "  __  ");
-                strcmp(map[i][j].secondLine, "  /  \\  ");
-                strcmp(map[i][j].thirdLine, "  \\__/  ");
+                strcpy(map[i][j].firstLine, "  __  ");
+                strcpy(map[i][j].secondLine, "  /  \\  ");
+                strcpy(map[i][j].thirdLine, "  \\__/  ");
             }
             else if(map[i][j].type == 3) // درپوش چاه
             {                
-                strcmp(map[i][j].firstLine, "  __  ");
-                strcmp(map[i][j].secondLine, "  /\033[0;47m  \\  \033[0;38m");
-                strcmp(map[i][j].thirdLine, "  \\\033[0;47m__/  \033[0;38m");
+                strcpy(map[i][j].firstLine, "  __  ");
+                strcpy(map[i][j].secondLine, "  /\033[0;47m  \\  \033[0;38m");
+                strcpy(map[i][j].thirdLine, "  \\\033[0;47m__/  \033[0;38m");
             }
             else if(map[i][j].type == 4) // چراغ
             {                
-                strcmp(map[i][j].firstLine, "      ");
-                strcmp(map[i][j].secondLine, "  \033[0;33m****\033[0;38m  ");
-                strcmp(map[i][j].thirdLine, "  \033[0;33m****\033[0;38m  ");
+                strcpy(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].secondLine, "  \033[0;33m****\033[0;38m  ");
+                strcpy(map[i][j].thirdLine, "  \033[0;33m****\033[0;38m  ");
             }
             else if(map[i][j].type == 5) // محل قرار گیری چراغ
             {                
-                strcmp(map[i][j].firstLine, "      ");
-                strcmp(map[i][j].secondLine, "  ****  ");
-                strcmp(map[i][j].thirdLine, "  ****  ");
+                strcpy(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].secondLine, "  ****  ");
+                strcpy(map[i][j].thirdLine, "  ****  ");
             }
             else if(map[i][j].type == 6) // مسدود کننده محل خروج
             {
-                strcmp(map[i][j].firstLine, "      ");
-                strcmp(map[i][j].secondLine, "\033[0;41m        \033[0;38m");
-                strcmp(map[i][j].thirdLine, "\033[0;41m        \033[0;38m/");
+                strcpy(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].secondLine, "\033[0;41m        \033[0;38m");
+                strcpy(map[i][j].thirdLine, "\033[0;41m        \033[0;38m/");
             }
             else if(map[i][j].type == 7) // خروجی
             {                
-                strcmp(map[i][j].firstLine, "      ");
-                strcmp(map[i][j].secondLine, "  EXIT  ");
-                strcmp(map[i][j].thirdLine, "        ");
+                strcpy(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].secondLine, "  EXIT  ");
+                strcpy(map[i][j].thirdLine, "        ");
             }
             else if(map[i][j].type == 8) //SG 
             {
-                char current[25] = "   ";
+                char current[40] = "   ";
                 strcat(current, SergentGoodley.nameForPrint);
                 strcat(current, "   ");
 
-                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].firstLine, "      ");
                 strcpy(map[i][j].secondLine, current);
-                strcmp(map[i][j].thirdLine, "        ");
+                strcpy(map[i][j].thirdLine, "        ");
             }
             else if(map[i][j].type == 9) //SH 
             {
@@ -179,19 +201,54 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcat(current, SherlockHolmes.nameForPrint);
                 strcat(current, "   ");
 
-                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].firstLine, "      ");
                 strcpy(map[i][j].secondLine, current);
-                strcmp(map[i][j].thirdLine, "        ");
+                strcpy(map[i][j].thirdLine, "        ");
             }
             else if(map[i][j].type == 10) //JW 
             {
-                char current[25] = "   ";
-                strcat(current, JohnWatson.nameForPrint);
-                strcat(current, "   ");
+                int direction = JohnWatson.name[3] - 48;
 
-                strcmp(map[i][j].firstLine, "      ");
-                strcpy(map[i][j].secondLine, current);
-                strcmp(map[i][j].thirdLine, "        ");
+                if(direction == north)
+                { 
+                    strcpy(map[i][j].firstLine, "  \033[0;33m __\033[0;38m  ");
+                    strcpy(map[i][j].secondLine, JohnWatson.nameForPrint);
+                    strcpy(map[i][j].thirdLine, "        ");
+                }
+                else if(direction == south)
+                {
+                    strcpy(map[i][j].firstLine, "      ");
+                    strcpy(map[i][j].secondLine, JohnWatson.nameForPrint);
+                    strcpy(map[i][j].thirdLine, "  \033[0;33m __\033[0;38m  ");
+                }
+                else if(direction == northEast)
+                {
+                    strcpy(map[i][j].firstLine, "      ");
+                    strcpy(map[i][j].secondLine, "   ");
+                    strcat(map[i][j].secondLine, JohnWatson.nameForPrint);
+                    strcat(map[i][j].secondLine, "\033[0;33m\\\033[0;38m  ");
+                    strcpy(map[i][j].thirdLine, "        ");
+                }
+                else if(direction == southEast)
+                {
+                    strcpy(map[i][j].firstLine, "      ");
+                    strcpy(map[i][j].secondLine, JohnWatson.nameForPrint);
+                    strcpy(map[i][j].thirdLine, "     \033[0;33m/\033[0;38m  ");
+                }
+                else if(direction == northWest)
+                {
+                    strcpy(map[i][j].firstLine, "      ");
+                    strcpy(map[i][j].secondLine, "  \033[0;33m/\033[0;38m");
+                    strcat(map[i][j].secondLine, JohnWatson.nameForPrint);
+                    strcat(map[i][j].secondLine, "   ");
+                    strcpy(map[i][j].thirdLine, "        ");
+                }
+                else
+                {
+                    strcpy(map[i][j].firstLine, "      ");
+                    strcpy(map[i][j].secondLine, JohnWatson.nameForPrint);
+                    strcpy(map[i][j].thirdLine, "  \033[0;33m\\\033[0;38m     ");
+                }
             }
             else if(map[i][j].type == 11) //JB 
             {
@@ -199,9 +256,9 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcat(current, JeremyBert.nameForPrint);
                 strcat(current, "   ");
 
-                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].firstLine, "      ");
                 strcpy(map[i][j].secondLine, current);
-                strcmp(map[i][j].thirdLine, "        ");
+                strcpy(map[i][j].thirdLine, "        ");
             }
             else if(map[i][j].type == 12) //MS 
             {
@@ -209,9 +266,9 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcat(current, MissStealthy.nameForPrint);
                 strcat(current, "   ");
 
-                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].firstLine, "      ");
                 strcpy(map[i][j].secondLine, current);
-                strcmp(map[i][j].thirdLine, "        ");
+                strcpy(map[i][j].thirdLine, "        ");
             }
             else if(map[i][j].type == 13) //IL 
             {
@@ -219,9 +276,9 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcat(current, InspectorLestrade.nameForPrint);
                 strcat(current, "   ");
 
-                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].firstLine, "      ");
                 strcpy(map[i][j].secondLine, current);
-                strcmp(map[i][j].thirdLine, "        ");
+                strcpy(map[i][j].thirdLine, "        ");
             }        
             else if(map[i][j].type == 14) //WG
             {
@@ -229,9 +286,9 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcat(current, SirWilliamGull.nameForPrint);
                 strcat(current, "   ");
 
-                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].firstLine, "      ");
                 strcpy(map[i][j].secondLine, current);
-                strcmp(map[i][j].thirdLine, "        ");
+                strcpy(map[i][j].thirdLine, "        ");
             }            
             else if(map[i][j].type == 15) //JS 
             {
@@ -239,9 +296,9 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcat(current, JohnSmith.nameForPrint);
                 strcat(current, "   ");
 
-                strcmp(map[i][j].firstLine, "      ");
+                strcpy(map[i][j].firstLine, "      ");
                 strcpy(map[i][j].secondLine, current);
-                strcmp(map[i][j].thirdLine, "        ");
+                strcpy(map[i][j].thirdLine, "        ");
             }
             // else if(map[i][j].type == 8) // کاراکتر
             // {
@@ -357,7 +414,7 @@ void board(part** map, int horizontal, int vertical)
         {
             printf("______");
 
-            printf("/        \\");// سطر دوم اندیس های فرد
+            printf("/%s\\" ,map[0][2 * j + 1].secondLine); // سطر دوم اندیس های فرد
         }
         printf("\n");
 
@@ -366,7 +423,7 @@ void board(part** map, int horizontal, int vertical)
             printf(" ");
             for(int j = 0; j < vertical / 2; j++)
             {
-                printf("/      \\"); // سطر اول اندیس های زوج
+                printf("/%s\\"); // سطر اول اندیس های زوج
                 printf("        "); // سطر سوم اندیس های فرد
             }
             printf("/\n");
@@ -415,14 +472,14 @@ void board(part** map, int horizontal, int vertical)
         for(int j = 0; j < vertical / 2; j++)
         {
             printf("        ");
-            printf("/      \\"); // سطر اول اندیس های فرد
+            printf("/%s\\" ,map[j][0].firstLine); // سطر اول اندیس های فرد
         }
         printf("\n");
 
         printf("  ______");
         for(int j = 0; j < vertical / 2; j++)
         {
-            printf("/        \\"); // سطر دوم اندیس های فرد
+            printf("/%s\\" ,map[j][0].secondLine); // سطر دوم اندیس های فرد
 
             printf("______");
         }
@@ -431,29 +488,29 @@ void board(part** map, int horizontal, int vertical)
 
         for(int i = 0; i < horizontal; i++)
         {
-            printf(" /      \\"); // سطر اول اندیس های زوج
+            printf(" /%s\\" ,map[i][0].firstLine); // سطر اول اندیس های زوج
             for(int j = 0; j < vertical / 2; j++)
             {
-                printf("        "); // سطر سوم اندیس های فرد
-                printf("/      \\"); // سطر اول اندیس های زوج
+                printf("%s" ,map[i][2 * j + 1].thirdLine); // سطر سوم اندیس های فرد
+                printf("/%s\\" ,map[i][2 * j].firstLine); // سطر اول اندیس های زوج
             }
             printf("\n");
 
-            printf("/        \\"); // سطر دوم اندیس های زوج
+            printf("/%s\\" , map[i][0].secondLine); // سطر دوم اندیس های زوج
             for(int j = 0; j < vertical / 2; j++)
             {
                 printf("______");
 
-                printf("/        \\"); // سطر دوم اندیس های زوج
+                printf("/%s\\", map[i][2 * j].secondLine); // سطر دوم اندیس های زوج
             }
             printf("\n");
 
-            printf("\\        /"); // سطر سوم اندیس های زوج
+            printf("\\%s/", map[i][0].thirdLine); // سطر سوم اندیس های زوج
             for(int j = 0; j < vertical / 2; j++)
             {
                 printf("      ");
 
-                printf("\\        /"); // سطر سوم اندیس های زوج
+                printf("\\%s/", map[i][j].thirdLine); // سطر سوم اندیس های زوج
             }
             printf("\n");
 
