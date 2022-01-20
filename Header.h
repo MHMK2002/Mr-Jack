@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+#include <stdbool.h>
+#include <string.h>
+
+
+
+
 
 void printBlack() { printf("\033[0;30m"); }
 void printRed(){ printf("\033[0;31m"); }
