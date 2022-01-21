@@ -46,80 +46,21 @@ void reset(part** map, int horizontal, int vertical);
 
 int main()
 {
-
     part **map = newGame();
-    reset(map, 9, 13);
-    printf("Hello World!!\n");
-    board(map,9, 13);
-    // int k = 0;
-    // for(int i = 0; i < 9; i++)
-    // {
-    //     for(int j = 0; j < 13; j++)
-    //         if(map[i][j].type == 1)
-    //             printf("%d %s %s %s\n", k++, map[i][j].firstLine, map[i][j].secondLine, map[i][j].thirdLine);
-    // }
+    // reset(map, 9, 13);
+    // // printf("Hello World!!\n");
+    // board(map,9, 12);
 
-    // for(int i = 0; i < 9;i++)
-    // {
-    //     for(int j = 0; j < 13; j++)
-    //     printf("%d " ,map[i][j].type);
+    printf("%2d", 5);
+    printf("\n%2d", 15);
+    printf("\n%2d", 185);
 
-    //     printf("\n");
-    // }
-
-    // printf("  ______\n");
-    // printf(" /      \\\n");
-    // printf("/ ");
-    // printYellowHighLight();
-    // printf("      ");
-    // resetColor();
-    // printf(" \\\n");
-    // printf("\\ ");
-    // printYellowHighLight();
-    // printf("      ");
-    // resetColor();
-    // printf(" /\n");
-    // printf(" \\______/");
+    // menu();
 
 
-    // printf("  ______\n");
-    // printf(" /  __  \\\n");
-    // printf("/  /XX\\  \\\n");
-    // printf("\\  \\XX/  /\n");
-    // printf(" \\______/\n");
-    // int choice = menu();
-
-    // switch (choice)
-    // {
-    //     case 1:
-        
-            
-    //     break;
-    //     case 2:
-
-    //     break;
-    //     case 3:
-
-    //     break;
-    //     case 4:
-
-    //     break;
-    //     case 5:
-
-    //     break;
-    // }
-
-    // printf("  ______\n");
-    // printf(" / \033[0;33m __\033[0;38m  \\\n");
-    // printf("/  \033[0;33m/\033[0;38mJH\033[0;33m\\\033[0;38m  \\\n");
-    // printf("\\  \033[0;33m\\__/\033[0;38m  /\n");
-    // printf(" \\______/\n");
 }
 
 
-
-
-// enum typeOfComponents{empty, block, well, wellBlocker, lamp, lampLocation, Roadblock, Exit, character};
 
 void reset(part** map, int horizontal, int vertical) // این تابع هر بار کل نقشه را بررسی می کند و هربار نقشه را پس از تغییر چاپ می کند.
 {
@@ -139,61 +80,98 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 map[i][j].thirdLine[8] = '\0';
             }
             else if(map[i][j].type == 1) //محل های بسته
-            {                
-                strcpy(map[i][j].firstLine, "\033[0;47m      \033[0;38m");
-                map[i][j].firstLine[20] = '\0';
+            {
+                int random = rand() % 3;                
+                strcpy(map[i][j].firstLine, "      ");
+                map[i][j].firstLine[6] = '\0';
+                if(random == 0) // white
+                {
+                    strcpy(map[i][j].secondLine, "\033[0;37m########\033[0;38m");
+                    map[i][j].secondLine[22] = '\0';
 
-                strcpy(map[i][j].secondLine, "\033[0;47m        \033[0;38m");
-                map[i][j].secondLine[22] = '\0';
+                    strcpy(map[i][j].thirdLine, "\033[0;37m########\033[0;38m");
+                    map[i][j].thirdLine[22] = '\0';
+                }
+                else if(random == 1) // Green
+                {
+                    strcpy(map[i][j].secondLine, "\033[0;32m########\033[0;38m");
+                    map[i][j].secondLine[22] = '\0';
 
-                strcpy(map[i][j].thirdLine, "\033[0;47m        \033[0;38m");
-                map[i][j].thirdLine[22] = '\0';
+                    strcpy(map[i][j].thirdLine, "\033[0;32m########\033[0;38m");
+                    map[i][j].thirdLine[22] = '\0';
+                }
+                else // Cyan
+                {
+                    strcpy(map[i][j].secondLine, "\033[0;36m########\033[0;38m");
+                    map[i][j].secondLine[22] = '\0';
+
+                    strcpy(map[i][j].thirdLine, "\033[0;36m########\033[0;38m");
+                    map[i][j].thirdLine[22] = '\0';
+                }
+
             }
             else if(map[i][j].type == 2) //چاه
             {                
-                strcpy(map[i][j].firstLine, "  __  ");
-                strcpy(map[i][j].secondLine, "  /  \\  ");
-                strcpy(map[i][j].thirdLine, "  \\__/  ");
+                strcpy(map[i][j].firstLine, " ____ ");
+                map[i][j].firstLine[6] = '\0';
+                strcpy(map[i][j].secondLine, " /    \\ ");
+                map[i][j].secondLine[8] = '\0';
+                strcpy(map[i][j].thirdLine, " \\____/ ");
             }
             else if(map[i][j].type == 3) // درپوش چاه
             {                
-                strcpy(map[i][j].firstLine, "  __  ");
-                strcpy(map[i][j].secondLine, "  /\033[0;47m  \\  \033[0;38m");
-                strcpy(map[i][j].thirdLine, "  \\\033[0;47m__/  \033[0;38m");
+                strcpy(map[i][j].firstLine, " ____ ");
+                map[i][j].firstLine[6] = '\0';
+                strcpy(map[i][j].secondLine, " /\033[0;41m    \033[0;38m\\ ");
+                strcpy(map[i][j].thirdLine, " \\\033[0;41m____\033[0;38m/ ");
             }
             else if(map[i][j].type == 4) // چراغ
             {                
                 strcpy(map[i][j].firstLine, "      ");
+                map[i][j].firstLine[6] = '\0';
                 strcpy(map[i][j].secondLine, "  \033[0;33m****\033[0;38m  ");
                 strcpy(map[i][j].thirdLine, "  \033[0;33m****\033[0;38m  ");
             }
             else if(map[i][j].type == 5) // محل قرار گیری چراغ
             {                
                 strcpy(map[i][j].firstLine, "      ");
+                map[i][j].firstLine[6] = '\0';
                 strcpy(map[i][j].secondLine, "  ****  ");
+                map[i][j].secondLine[8] = '\0';
                 strcpy(map[i][j].thirdLine, "  ****  ");
+                map[i][j].thirdLine[8] = '\0';
             }
             else if(map[i][j].type == 6) // مسدود کننده محل خروج
             {
                 strcpy(map[i][j].firstLine, "      ");
+                map[i][j].firstLine[6] = '\0';
                 strcpy(map[i][j].secondLine, "\033[0;41m        \033[0;38m");
+                map[i][j].secondLine[22] = '\0';
                 strcpy(map[i][j].thirdLine, "\033[0;41m        \033[0;38m/");
+                map[i][j].thirdLine[22] = '\0';
             }
             else if(map[i][j].type == 7) // خروجی
             {                
                 strcpy(map[i][j].firstLine, "      ");
+                map[i][j].firstLine[6] = '\0';
                 strcpy(map[i][j].secondLine, "  EXIT  ");
+                map[i][j].secondLine[8] = '\0';
                 strcpy(map[i][j].thirdLine, "        ");
+                map[i][j].thirdLine[8] = '\0';
             }
             else if(map[i][j].type == 8) //SG 
             {
                 char current[40] = "   ";
+                map[i][j].firstLine[6] = '\0';
                 strcat(current, SergentGoodley.nameForPrint);
                 strcat(current, "   ");
 
                 strcpy(map[i][j].firstLine, "      ");
                 strcpy(map[i][j].secondLine, current);
+                map[i][j].secondLine[33] = '\0';
                 strcpy(map[i][j].thirdLine, "        ");
+                map[i][j].thirdLine[8] = '\0';
+
             }
             else if(map[i][j].type == 9) //SH 
             {
@@ -202,8 +180,10 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcat(current, "   ");
 
                 strcpy(map[i][j].firstLine, "      ");
+                map[i][j].firstLine[6] = '\0';
                 strcpy(map[i][j].secondLine, current);
                 strcpy(map[i][j].thirdLine, "        ");
+                map[i][j].thirdLine[8] = '\0';
             }
             else if(map[i][j].type == 10) //JW 
             {
@@ -211,8 +191,10 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
 
                 if(direction == north)
                 { 
-                    strcpy(map[i][j].firstLine, "  \033[0;33m __\033[0;38m  ");
-                    strcpy(map[i][j].secondLine, JohnWatson.nameForPrint);
+                    strcpy(map[i][j].firstLine, "  \033[0;33m__\033[0;38m  ");
+                    strcpy(map[i][j].secondLine, "   ");
+                    strcat(map[i][j].secondLine, JohnWatson.nameForPrint);
+                    strcat(map[i][j].secondLine, "   ");
                     strcpy(map[i][j].thirdLine, "        ");
                 }
                 else if(direction == south)
@@ -257,8 +239,10 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcat(current, "   ");
 
                 strcpy(map[i][j].firstLine, "      ");
+                map[i][j].firstLine[6] = '\0';
                 strcpy(map[i][j].secondLine, current);
                 strcpy(map[i][j].thirdLine, "        ");
+                map[i][j].thirdLine[8] = '\0';
             }
             else if(map[i][j].type == 12) //MS 
             {
@@ -267,8 +251,10 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcat(current, "   ");
 
                 strcpy(map[i][j].firstLine, "      ");
+                map[i][j].firstLine[6] = '\0';
                 strcpy(map[i][j].secondLine, current);
                 strcpy(map[i][j].thirdLine, "        ");
+                map[i][j].thirdLine[8] = '\0';
             }
             else if(map[i][j].type == 13) //IL 
             {
@@ -277,8 +263,10 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcat(current, "   ");
 
                 strcpy(map[i][j].firstLine, "      ");
+                map[i][j].firstLine[6] = '\0';
                 strcpy(map[i][j].secondLine, current);
                 strcpy(map[i][j].thirdLine, "        ");
+                map[i][j].thirdLine[8] = '\0';
             }        
             else if(map[i][j].type == 14) //WG
             {
@@ -287,8 +275,10 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcat(current, "   ");
 
                 strcpy(map[i][j].firstLine, "      ");
+                map[i][j].firstLine[6] = '\0';
                 strcpy(map[i][j].secondLine, current);
                 strcpy(map[i][j].thirdLine, "        ");
+                map[i][j].thirdLine[8] = '\0';
             }            
             else if(map[i][j].type == 15) //JS 
             {
@@ -297,8 +287,10 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcat(current, "   ");
 
                 strcpy(map[i][j].firstLine, "      ");
+                map[i][j].firstLine[6] = '\0';
                 strcpy(map[i][j].secondLine, current);
                 strcpy(map[i][j].thirdLine, "        ");
+                map[i][j].thirdLine[8] = '\0';
             }
             // else if(map[i][j].type == 8) // کاراکتر
             // {
@@ -391,11 +383,11 @@ void board(part** map, int horizontal, int vertical)
 {
     int z = 65;
 
-    reset(map, horizontal, vertical);
+    reset(map, horizontal, vertical + 1);
     system("cls");
     if(vertical % 2 == 0)
     {
-        for(int j = 0; j < vertical / 2; j++)
+        for(int j = 1; j <= vertical / 2; j++)
         {
             printf("          ");
 
@@ -403,18 +395,18 @@ void board(part** map, int horizontal, int vertical)
         }
         printf("\n ");
         
-        for(int j = 0; j < vertical / 2; j++)
+        for(int j = 1; j <= vertical / 2; j++)
         {
             printf("        ");
 
-            printf("/%s\\" ,map[0][2 * j + 1].firstLine); // سطر اول اندیس های فرد
+            printf("/%s\\" ,map[0][2 * j - 1].firstLine); // سطر اول اندیس های فرد
         }
         printf("\n  ");
-        for(int j = 0; j < vertical / 2; j++)
+        for(int j = 1; j <= vertical / 2; j++)
         {
             printf("______");
 
-            printf("/%s\\" ,map[0][2 * j + 1].secondLine); // سطر دوم اندیس های فرد
+            printf("/%s\\" ,map[0][2 * j - 1].secondLine); // سطر دوم اندیس های فرد
         }
         printf("\n");
 
@@ -423,23 +415,28 @@ void board(part** map, int horizontal, int vertical)
             printf(" ");
             for(int j = 0; j < vertical / 2; j++)
             {
-                printf("/%s\\"); // سطر اول اندیس های زوج
-                printf("        "); // سطر سوم اندیس های فرد
+                printf("/%s\\" ,map[i][2 * j].firstLine); // سطر اول اندیس های زوج
+                printf("%s" ,map[i][2 * j + 1].thirdLine); // سطر سوم اندیس های فرد
             }
             printf("/\n");
 
             for(int j = 0; j < vertical / 2; j++)
             {
-                printf("/        \\"); // سطر دوم اندیس های زوج
+                printf("/%s\\" ,map[i][2 * j].secondLine); // سطر دوم اندیس های زوج
+
                 printf("______");
             }
             printf("/\n");
 
             for(int j = 0; j < vertical / 2; j++)
             {
-                printf("\\        /"); // سطر سوم اندیس های زوج
+                printf("\\%s/" ,map[i][2 * j].thirdLine); // سطر سوم اندیس های زوج
 
-                printf("      ");
+                if(i == horizontal - 1)
+                    printf("      ");// سطر اول اندیس های فرد
+                else
+                    printf("%s" ,map[i + 1][2 * j + 1].firstLine);// سطر اول اندیس های فرد
+
 
             }
             if(i != horizontal - 1)
@@ -447,11 +444,14 @@ void board(part** map, int horizontal, int vertical)
             printf("\n ");
 
 
-            for(int j = 0;j < vertical / 2; j++)
+            for(int j = 1 ; j <= vertical / 2; j++)
             {
                 printf("\\______/");
 
-                printf("        ");
+                if(i == horizontal - 1)
+                    printf("        "); // سطر دوم اندیس های فرد
+                else
+                    printf("%s" ,map[i + 1][2 * j - 1].secondLine); // سطر دوم اندیس های فرد
 
             }
             if(i != horizontal - 1)
@@ -462,24 +462,24 @@ void board(part** map, int horizontal, int vertical)
     
     else
     {
-        for(int j = 0; j < vertical / 2; j++)
+        for(int j = 1; j <= vertical / 2; j++)
         {
             printf("          ");
             printf("______");
         }
         printf("\n ");
 
-        for(int j = 0; j < vertical / 2; j++)
+        for(int j = 1; j <= vertical / 2; j++)
         {
             printf("        ");
-            printf("/%s\\" ,map[j][0].firstLine); // سطر اول اندیس های فرد
+            printf("/%s\\" ,map[0][2 * j - 1].firstLine); // سطر اول اندیس های فرد
         }
         printf("\n");
 
         printf("  ______");
-        for(int j = 0; j < vertical / 2; j++)
+        for(int j = 1; j <= vertical / 2; j++)
         {
-            printf("/%s\\" ,map[j][0].secondLine); // سطر دوم اندیس های فرد
+            printf("/%s\\" ,map[0][2 * j - 1].secondLine); // سطر دوم اندیس های فرد
 
             printf("______");
         }
@@ -489,15 +489,15 @@ void board(part** map, int horizontal, int vertical)
         for(int i = 0; i < horizontal; i++)
         {
             printf(" /%s\\" ,map[i][0].firstLine); // سطر اول اندیس های زوج
-            for(int j = 0; j < vertical / 2; j++)
+            for(int j = 1; j <= vertical / 2; j++)
             {
-                printf("%s" ,map[i][2 * j + 1].thirdLine); // سطر سوم اندیس های فرد
+                printf("%s" ,map[i][2 * j - 1].thirdLine); // سطر سوم اندیس های فرد
                 printf("/%s\\" ,map[i][2 * j].firstLine); // سطر اول اندیس های زوج
             }
             printf("\n");
 
             printf("/%s\\" , map[i][0].secondLine); // سطر دوم اندیس های زوج
-            for(int j = 0; j < vertical / 2; j++)
+            for(int j = 1; j <= vertical / 2; j++)
             {
                 printf("______");
 
@@ -506,18 +506,24 @@ void board(part** map, int horizontal, int vertical)
             printf("\n");
 
             printf("\\%s/", map[i][0].thirdLine); // سطر سوم اندیس های زوج
-            for(int j = 0; j < vertical / 2; j++)
+            for(int j = 1; j <= vertical / 2; j++)
             {
-                printf("      ");
+                if(i == horizontal - 1)
+                    printf("      ");
+                else
+                    printf("%s", map[i + 1][2 * j - 1].firstLine); // سطر اول اندیس های فرد
 
-                printf("\\%s/", map[i][j].thirdLine); // سطر سوم اندیس های زوج
+                printf("\\%s/", map[i][2 * j].thirdLine); // سطر سوم اندیس های زوج
             }
             printf("\n");
 
             printf(" \\______/");
-            for(int j = 0;j < vertical / 2; j++)
+            for(int j = 1; j <= vertical / 2; j++)
             {
-                printf("        ");
+                if(i == horizontal - 1)
+                    printf("        ");
+                else
+                    printf("%s", map[i  + 1][2 * j - 1].secondLine); // سطر دوم اندیس های فرد
 
                 printf("\\______/");
             }
@@ -556,7 +562,7 @@ int menu()
     system("cls");
 
     printRed();
-    printf("\t\t\t\t\t\t\t\t\t              Mr Jack Board Game         \n\n");
+    printf("\t\t\t\t\t\t\t\t\t             \033[3;33mMr Jack Board Game         \n\n");
     printGreen();
     printf("\t\t\t\t\t\t\t\t\t  * * * * * * * * * * * * * * * * * * * *\n");
     printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
