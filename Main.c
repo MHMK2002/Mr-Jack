@@ -2,6 +2,8 @@
 #define firstPlayer 0
 #define secondPlayer 1
 #define enumPrint(E) (#E)
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#define Min(a, b, c, d, e, f) min(min(min(a, b), min(c, d)), min(e, f))
 
 
 
@@ -24,8 +26,9 @@ typedef struct Node
 }Node;
 
 
-enum typeOfComponents{empty, block, well, wellBlocker, lamp, lampLocation, Roadblock, Exit};
+enum typeOfComponents{empty, block, well, wellBlocker, Fisrstamp, secondLamp, thirdLamp, fourthLamp, outherLamp, lampLocation, Roadblock, Exit};
 enum ORDER{beforeOrAfter, afterMovement, movementOrFunctionality, simultaneous};
+enum Char{SG = 1, SH, JW, JB, MS, IL, WG, JS};
 enum Direction{north, south, northEast, southEast, northWest, southWest};
 
 
@@ -36,7 +39,7 @@ Character SherlockHolmes = {"SH", "\033[1;31mSH\033[0;38m", false, 3, afterMovem
 Character JohnWatson = {"JW 2", "\033[1;33mJW\033[0;38m", false, 3, afterMovement};
 Character JeremyBert = {"JB", "\033[1;36mJB\033[0;38m", false, 3, beforeOrAfter};
 Character MissStealthy = {"MS", "\033[1;32mMS\033[0;38m", false, 3, simultaneous};
-Character InspectorLestrade = {"IN", "\033[1;34mIN\033[0;38m", false, 3, beforeOrAfter};
+Character InspectorLestrade = {"IL", "\033[1;34mIL\033[0;38m", false, 3, beforeOrAfter};
 Character SirWilliamGull = {"WG", "\033[1;35mWG\033[0;38m", false, 3, movementOrFunctionality};
 Character JohnSmith = {"JS", "\033[1;33mJS\033[0;38m", false, 3, beforeOrAfter};
 
@@ -85,6 +88,10 @@ void print(Node* head);
 int checkIsCorrectForOperation(part** map, int horizontal, int vertical, int type);
 void exchange(part** map, int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical, int firstType, int secondType);
 int** copyMap(part** map ,int horizontal ,int vertical);
+int **pathLength(int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int secondHorizontal, int secondVertical);
+
+
+
 
 
 int game(part** map, int horizontal, int vertical) // این تابع اصلی بازی است.
@@ -97,6 +104,7 @@ int game(part** map, int horizontal, int vertical) // این تابع اصلی �
     int jack;
     int detective;
     int current;
+    int round = 1;
     current = rand() % 2;
     if(current)
         printf("\t\tJack is first Player\tDetective is second Player");
@@ -109,7 +117,6 @@ int game(part** map, int horizontal, int vertical) // این تابع اصلی �
 
     jack = current;
     detective = !current;
-    int round = 1;
 
 
     Node* theSuspects = TheSuspects();
@@ -636,34 +643,58 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
             }
             else if(map[i][j].type == 1) //محل های بسته
             {
-                int random = rand() % 3;                
-                strcpy(map[i][j].firstLine, "      ");
-                map[i][j].firstLine[6] = '\0';
+                int random = rand() % 5;                
+
                 if(random == 0) // white
                 {
-                    strcpy(map[i][j].secondLine, "\033[0;37m########\033[0;38m");
-                    map[i][j].secondLine[22] = '\0';
+                    strcpy(map[i][j].firstLine, "  __  ");
 
-                    strcpy(map[i][j].thirdLine, "\033[0;37m########\033[0;38m");
-                    map[i][j].thirdLine[22] = '\0';
+                    strcpy(map[i][j].secondLine, "  /__\\  ");
+ 
+
+                    strcpy(map[i][j].thirdLine, "  |__|  ");
+
                 }
-                else if(random == 1) // Green
+                else if(random == 1) // Purple
                 {
-                    strcpy(map[i][j].secondLine, "\033[0;32m########\033[0;38m");
-                    map[i][j].secondLine[22] = '\0';
+                    strcpy(map[i][j].firstLine, "  \033[1;95m__\033[0;37m  ");
+  
+                    strcpy(map[i][j].secondLine, "  \033[1;95m/__\\\033[0;37m  ");
 
-                    strcpy(map[i][j].thirdLine, "\033[0;32m########\033[0;38m");
-                    map[i][j].thirdLine[22] = '\0';
+
+                    strcpy(map[i][j].thirdLine, "  \033[1;95m|__|\033[0;37m  ");
+
                 }
-                else // Cyan
+                else if(random == 2)// Cyan
                 {
-                    strcpy(map[i][j].secondLine, "\033[0;36m########\033[0;38m");
-                    map[i][j].secondLine[22] = '\0';
+                    strcpy(map[i][j].firstLine, "  \033[1;96m__\033[0;37m  ");
+  
+                    strcpy(map[i][j].secondLine, "  \033[1;96m/__\\\033[0;37m  ");
 
-                    strcpy(map[i][j].thirdLine, "\033[0;36m########\033[0;38m");
-                    map[i][j].thirdLine[22] = '\0';
+
+                    strcpy(map[i][j].thirdLine, "  \033[1;96m|__|\033[0;37m  ");
+
                 }
+                else if(random == 3) // درخت
+                {
+                    strcpy(map[i][j].firstLine, "      ");
 
+                    strcpy(map[i][j].secondLine, "  \033[0;42m    \033[0;38m  ");
+
+
+                    strcpy(map[i][j].thirdLine, " \033[4;37m  ||  \033[0;38m ");
+
+                }
+                else // درخت
+                {
+                    strcpy(map[i][j].firstLine, " /\033[0;42m  \033[0;38m\\ ");
+
+                    strcpy(map[i][j].secondLine, " /\033[0;42m    \033[0;38m\\ ");
+
+
+                    strcpy(map[i][j].thirdLine, " \033[4;37m  ||  \033[0;38m ");
+
+                }
             }
             else if(map[i][j].type == 2) //چاه
             {     
@@ -863,14 +894,14 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                     }
                 }
             }
-            else if(map[i][j].type == 4) // چراغ
+            else if(map[i][j].type > 3 && map[i][j].type < 9) // چراغ
             {                
                 strcpy(map[i][j].firstLine, "      ");
                 map[i][j].firstLine[6] = '\0';
                 strcpy(map[i][j].secondLine, "  \033[0;33m****\033[0;38m  ");
                 strcpy(map[i][j].thirdLine, "  \033[0;33m****\033[0;38m  ");
             }
-            else if(map[i][j].type == 5) // محل قرار گیری چراغ
+            else if(map[i][j].type == 9) // محل قرار گیری چراغ
             {                
                 strcpy(map[i][j].firstLine, "      ");
                 map[i][j].firstLine[6] = '\0';
@@ -879,7 +910,7 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcpy(map[i][j].thirdLine, "  ****  ");
                 map[i][j].thirdLine[8] = '\0';
             }
-            else if(map[i][j].type == 6) // مسدود کننده محل خروج
+            else if(map[i][j].type == 10) // مسدود کننده محل خروج
             {
                 strcpy(map[i][j].firstLine, "      ");
                 map[i][j].firstLine[6] = '\0';
@@ -888,7 +919,7 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
                 strcpy(map[i][j].thirdLine, "\033[0;41m        \033[0;38m/");
                 map[i][j].thirdLine[22] = '\0';
             }
-            else if(map[i][j].type == 7) // خروجی
+            else if(map[i][j].type == 11) // خروجی
             {                
                 if(map[i][j].character == NULL)
                 { 
@@ -1393,11 +1424,19 @@ void DecelerationOfBlockedPlaces()
 
     printf("\033[1;31mBlocked places\033[0m\n");
 
-    printf("  ______      \t  ______      \t  ______  \n");
-    printf(" /      \\     \t /      \\    \t /      \\\n");
-    printf("/########\\ OR \t/\033[0;36m########\033[0;38m\\ OR \t/\033[0;32m########\033[0;38m\\\n");
-    printf("\\########/    \t\\\033[0;36m########\033[0;38m/    \t\\\033[0;32m########\033[0;38m/\n");
-    printf(" \\______/     \t \\______/     \t \\______/");
+    // printf("  ______       \t  ______       \t  ______    ______      \t  ______      \t\n");
+    // printf(" /      \\      \t /      \\    \t /      \\\n");
+    // printf("/########\\  OR  /\033[0;36m########\033[0;38m\\  OR  /\033[0;32m########\033[0;38m\\\n");
+    // printf("\\########/     \t\\\033[0;36m########\033[0;38m/     \t\\\033[0;32m########\033[0;38m/\n");
+    // printf(" \\______/      \t \\______/      \t \\______/");
+
+
+    printf("  ______          ______          ______          ______          ______  \n");
+    printf(" /  __  \\        /  \033[1;95m__\033[0;37m  \\        /  \033[1;96m__\033[0;37m  \\        /      \\        / /\033[0;42m  \033[0;38m\\ \\ \n");
+    printf("/  /__\\  \\  OR  /  \033[1;95m/__\\\033[0;37m  \\  OR  /  \033[1;96m/__\\\033[0;37m  \\  OR  /  \033[0;42m    \033[0;38m  \\  OR  / /\033[0;42m    \033[0;38m\\ \\\n");
+    printf("\\  |__|  /      \\  \033[1;95m|__|\033[0;37m  /      \\  \033[1;96m|__|\033[0;37m  /      \\ \033[4;37m  ||  \033[0;38m /      \\ \033[4;37m  ||  \033[0;38m /\n");
+    printf(" \\______/        \\______/        \\______/        \\______/        \\______/\n");
+
 
 
     int choice;
@@ -1631,7 +1670,7 @@ void setVisible(part** map ,int horizontal ,int vertical) // این تابع ه�
         {
             if(j % 2) // برای خانه های با مقدار افقی فرد
             {
-                if(map[i][j].type == lamp) // خانه های اطراف لامپ
+                if(map[i][j].type > 3 && map[i][j].type < 9) // خانه های اطراف لامپ
                 {
                     if(j - 1 >= 0)
                         if(map[i][j - 1].character != NULL)
@@ -1707,7 +1746,7 @@ void setVisible(part** map ,int horizontal ,int vertical) // این تابع ه�
             }
             else // برای خانه های با مولفه افقی زوج
             {
-                if(map[i][j].type == lamp) // خانه های اطراف لامپ
+                if(map[i][j].type > 3 && map[i][j].type < 9) // خانه های اطراف لامپ
                 {
                     if(j - 1 >= 0)
                         if(map[i][j - 1].character != NULL)
@@ -1909,7 +1948,7 @@ int checkDestination(part** map, int horizontal, int vertical, bool visible)
 {
     if(map[horizontal][vertical].type == block)
         return 0;
-    if(map[horizontal][vertical].type == lamp)
+    if(map[horizontal][vertical].type > 3 && map[horizontal][vertical].type < 9)
         return 0;
     if(map[horizontal][vertical].type == lampLocation)
         return 0;
@@ -1924,51 +1963,116 @@ int checkDestination(part** map, int horizontal, int vertical, bool visible)
 }
 
 
+// void solveMaze(int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical, int tap[secondHorizontal][secondVertical], int map[secondHorizontal][secondVertical], int* output, int count)
+// {
+//     if(!(firstVertical % 2))
+//     {
+//         if(tap[firstHorizontal - 1][firstVertical] == tap[firstHorizontal][firstVertical] - 1)
+//         {
+//             output[count] = north;
+//             solveMaze(firstHorizontal - 1, firstVertical,secondHorizontal, secondVertical, tap, map, output, count++);
+//         }
+//         else if(tap[firstHorizontal + 1][firstVertical] == tap[firstHorizontal][firstVertical] - 1)
+//         {
+//             output[count] = south;
+//             solveMaze(firstHorizontal + 1, firstVertical,secondHorizontal, secondVertical, tap, map, output, count++);
+//         }
+//         else if(tap[firstHorizontal][firstVertical - 1] == tap[firstHorizontal][firstVertical] - 1)
+//         {
+//             output[count] = southEast;
+//             solveMaze(firstHorizontal, firstVertical - 1,secondHorizontal, secondVertical, tap, map, output, count++);
+//         }
+//         else if(tap[firstHorizontal][firstVertical + 1] == tap[firstHorizontal][firstVertical] - 1)
+//         {
+//             output[count] = southWest;
+//             solveMaze(firstHorizontal, firstVertical + 1,secondHorizontal, secondVertical, tap, map, output, count++);
+//         }
+//         else if(tap[firstHorizontal - 1][firstVertical - 1] == tap[firstHorizontal][firstVertical] - 1)
+//         {
+//             output[count] = northWest;
+//             solveMaze(firstHorizontal - 1, firstVertical - 1,secondHorizontal, secondVertical, tap, map, output, count++);
+//         }
+//         else if(tap[firstHorizontal - 1][firstVertical + 1] == tap[firstHorizontal][firstVertical] - 1)
+//         {
+//             output[count] = northEast;
+//             solveMaze(firstHorizontal - 1, firstVertical + 1,secondHorizontal, secondVertical, tap, map, output, count++);
+//         }
+//     }
+//     else
+//     {
+//         if(tap[firstHorizontal + 1][firstVertical + 1] == tap[firstHorizontal][firstVertical] - 1)
+//         {
+//             output[count] = southEast;
+//             solveMaze(firstHorizontal + 1, firstVertical + 1,secondHorizontal, secondVertical, tap, map, output, count++);
+//         }
+//         else if(tap[firstHorizontal + 1][firstVertical - 1] == tap[firstHorizontal][firstVertical] - 1)
+//         {
+//             output[count] = southWest;
+//             solveMaze(firstHorizontal + 1, firstVertical - 1,secondHorizontal, secondVertical, tap, map, output, count++);
+//         }
+//         else if(tap[firstHorizontal][firstVertical - 1] == tap[firstHorizontal][firstVertical] - 1)
+//         {
+//             output[count] = northWest;
+//             solveMaze(firstHorizontal, firstVertical - 1,secondHorizontal, secondVertical, tap, map, output, count++);
+//         }
+//         else if(tap[firstHorizontal][firstVertical + 1] == tap[firstHorizontal][firstVertical] - 1)
+//         {
+//             output[count] = northEast;
+//             solveMaze(firstHorizontal, firstVertical + 1,secondHorizontal, secondVertical, tap, map, output, count++);
+//         }
+//         else if(tap[firstHorizontal + 1][firstVertical] == tap[firstHorizontal][firstVertical] - 1)
+//         {
+//             output[count] = south;
+//             solveMaze(firstHorizontal + 1, firstVertical,secondHorizontal, secondVertical, tap, map, output, count++);
+//         }
+//         else if(tap[firstHorizontal - 1][firstVertical] == tap[firstHorizontal][firstVertical] - 1)
+//         {
+//             output[count] = north;
+//             solveMaze(firstHorizontal - 1, firstVertical,secondHorizontal, secondVertical, tap, map, output, count++);
+//         }
+            
+//     }
+// }
+
+// char* findDirection(part** map, int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical)
+// {
+//     int **copyMap = copyMap(map, )
+// }
+
+
+int **tap(int horizontal, int vertical)
+{
+    int **result = (int **)malloc((horizontal + 2) *sizeof(int*));
+    for(int i = 0; i < horizontal + 2; i++)
+    {
+        result[i] = (int *)malloc((vertical + 2) * sizeof(int));
+        for(int j = 0; j < vertical + 2; j++)
+            result[i][j] = 100;
+    }
+    return result;
+}
+
+char* nameOfFile(int count)
+{
+    char *output = (char*)malloc(8 * sizeof(char));
+    strcpy(output, "save");
+    output[4] = floor(count / 100.0);
+    output[5] = floor(count / 10.0) - floor(count / 100.0) * 10;
+    output[6] = count % 10;
+    output[7] = '\0';
+
+    return output;
+}
+
 int main()
 {
     // srand(time(NULL));
 
     part** map = newGame();
 
-    // board(map, 9, 13);
 
-    // getchar();
-    // exchangeCharacter(map, 4, 0, 0, 4);
+    DecelerationOfBlockedPlaces();
 
-    // board(map, 9, 13);
-
-    // getchar();
-
-    int **result = copyMap(map ,9 ,13);
-    for(int i = 0; i < 11; i++)
-    {
-        for(int j = 0; j < 15; j++)
-            printf("%d " ,result[i][j]);
-        printf("\n");
-    }
-    // setVisible(map, 9, 13);
-
-    // printf("\n%s %s" ,SergentGoodley.nameForPrint, SergentGoodley.visible ? "true" : "false");
-    // printf("\n%s %s" ,SherlockHolmes.nameForPrint, SherlockHolmes.visible ? "true" : "false");
-    // printf("\n%s %s" ,JohnWatson.nameForPrint, JohnWatson.visible ? "true" : "false");
-    // printf("\n%s %s" ,JeremyBert.nameForPrint, JeremyBert.visible ? "true" : "false");
-    // printf("\n%s %s" ,MissStealthy.nameForPrint, MissStealthy.visible ? "true" : "false");
-    // printf("\n%s %s" ,InspectorLestrade.nameForPrint, InspectorLestrade.visible ? "true" : "false");
-    // printf("\n%s %s" ,SirWilliamGull.nameForPrint, SirWilliamGull.visible ? "true" : "false");
-    // printf("\n%s %s" ,JohnSmith.nameForPrint, JohnSmith.visible ? "true" : "false");
-
-
-    // game(map ,9 ,13);
-
-
-//     Character SergentGoodley = {"SG", "\033[1;34mS\033[1;31mG\033[0;38m", false, 4, beforeOrAfter};
-// Character SherlockHolmes = {"SH", "\033[1;31mSH\033[0;38m", false, 3, afterMovement};
-// Character JohnWatson = {"JW 3", "\033[1;33mJW\033[0;38m", false, 3, afterMovement};
-// Character JeremyBert = {"JB", "\033[1;36mJB\033[0;38m", false, 3, beforeOrAfter};
-// Character MissStealthy = {"MS", "\033[1;32mMS\033[0;38m", false, 3, simultaneous};
-// Character InspectorLestrade = {"IN", "\033[1;34mIN\033[0;38m", false, 3, beforeOrAfter};
-// Character SirWilliamGull = {"WG", "\033[1;35mWG\033[0;38m", false, 3, movementOrFunctionality};
-// Character JohnSmith = {"JS", "\033[1;33mJS\033[0;38m", false, 3, beforeOrAfter};
 
 
 
@@ -2030,106 +2134,181 @@ int** copyMap(part** map ,int horizontal ,int vertical)
     return result;
 }
 
-int maze(part** map, int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical, int length)
+
+bool isCanToGo(int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical, int length)
 {
-    if(length > 0)
-    {
-        if(firstVertical == secondVertical)
-            if(firstHorizontal -1 == secondHorizontal || firstHorizontal + 1 == secondHorizontal)
-                return 1;
+    int **tap = pathLength(horizontal, vertical, map, secondHorizontal, secondVertical);
 
-        if(firstHorizontal == secondHorizontal)
-            if(firstVertical - 1 == secondVertical || firstVertical + 1 == secondVertical)
-                return 1;
-
-        if(firstVertical % 2)
-        {
-            if(firstHorizontal - 1 == secondHorizontal && firstVertical - 1 == secondHorizontal)
-                return 1;
-            if(firstHorizontal - 1 == secondHorizontal && firstVertical + 1 == secondVertical)
-                return 1;
-        }   
-
-        else
-        {
-            if(firstHorizontal + 1 == secondHorizontal && firstVertical + 1 == secondVertical)
-                return 1;
-            if(firstHorizontal + 1 == secondHorizontal && firstVertical - 1 == secondVertical)
-                return 1;
-        }
-
-        return 0;
-    }
-    if(length > 1)
-    {
-        if(firstVertical == secondVertical)
-        {
-            if(firstHorizontal - secondHorizontal == 2)
-            {
-                int type = map[firstHorizontal + 1][firstVertical].type;
-                if(type != block && type != lamp && type != lampLocation)
-                    return 1;
-                else
-                    return 0;
-            }
-            else if(secondHorizontal - firstHorizontal == 2)
-            {
-                int type = map[firstHorizontal - 1][firstVertical].type;
-                if(type != block && type != lamp && type != lampLocation)
-                    return 1;
-                else
-                    return 0;
-            }
-        }
-        if(firstHorizontal == secondHorizontal)
-        {
-            if(firstVertical - secondVertical == 2)
-            {
-                int type = map[firstHorizontal][firstVertical + 1].type;
-                if(type != block && type != lamp && type != lampLocation)
-                    return 1;
-                else
-                    return 0;
-            }
-            else if(secondVertical - firstVertical == 2)
-            {
-                int type = map[firstHorizontal][firstVertical - 1].type;
-                if(type != block && type != lamp && type != lampLocation)
-                    return 1;
-                else
-                    return 0;
-            }
-        }
-
-        if(firstVertical % 2)
-        {
-            
-        }
-        else
-        {
-            if(firstHorizontal - secondHorizontal == 1)
-            {
-
-            }
-            else if(secondHorizontal - firstHorizontal == 1)
-            {
-
-            }
-        }
-    }
-
+    if(length >= tap[firstHorizontal + 1][firstVertical + 1])
+        return true;
+    else
+        return false;
 }
 
-// زوج
+int **pathLength(int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int secondHorizontal, int secondVertical)
+{
+    int **tap = (int **)malloc((horizontal + 2) *sizeof(int*));
+    for(int i = 0; i < horizontal + 2; i++)
+    {
+        tap[i] = (int *)malloc((vertical + 2) * sizeof(int));
+        for(int j = 0; j < vertical + 2; j++)
+            tap[i][j] = 150;
+    }
+    int counter;
 
-//  i+1 j+1
-//  i+1 j-1
+
+    tap[secondHorizontal][secondVertical] = 0;
+
+    do
+    {
+        counter = 0;
+        for(int k = 1; k <= horizontal; k++)
+        {
+            for(int l = 1; l <= vertical; l++)
+            {
+                int c = tap[k][l];
+                if(map[k][l] == 0)
+                    if((k != secondHorizontal || l != secondVertical))
+                    {
+                        if((l % 2))
+                            tap[k][l] = Min(tap[k + 1][l], tap[k - 1][l], tap[k][l + 1], tap[k][l - 1], tap[k + 1][l + 1], tap[k + 1][l - 1]) + 1;
+
+                        else
+                            tap[k][l] = Min(tap[k + 1][l], tap[k - 1][l], tap[k][l + 1], tap[k][l - 1], tap[k - 1][l - 1], tap[k - 1][l + 1]) + 1;
+                    }
+                if(c != tap[k][l])
+                    counter++;
+            }
+        }
 
 
 
-// فرد
-// i-1 j-1
-// i-1 j+1
+    }while(counter != 0);
+
+
+    return tap;
+}
+
+
+void solveMaze(Character* character, int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int firstHorizontal, int firstVertical, int length)
+{
+    if(length == 0)
+        return;
+    int** tap = pathLength(horizontal, vertical, map, firstHorizontal, firstVertical);
+    for(int i = 0; i < length; i++)
+    {
+        int secondHorizontal = character->horizontal;
+        int secondVertical = character->vertical;
+        if(secondVertical % 2)
+        {
+            if(tap[secondHorizontal][secondVertical + 1] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal - 1;
+                character->vertical = secondVertical;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal + 2][secondVertical + 1] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal + 1;
+                character->vertical = secondVertical;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, (length - 1));
+            }
+            else if(tap[secondHorizontal + 1][secondVertical] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal;
+                character->vertical = secondVertical - 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal + 1][secondVertical + 2] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal;
+                character->vertical = secondVertical + 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal][secondVertical] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal - 1;
+                character->vertical = secondVertical - 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal][secondVertical + 2] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal - 1;
+                character->vertical = secondVertical + 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+        }
+        else
+        {
+            if(tap[secondHorizontal + 2][secondVertical + 2] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal + 1;
+                character->vertical = secondVertical + 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal + 2][secondVertical] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal + 1;
+                character->vertical = secondVertical - 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal + 1][secondVertical] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal;
+                character->vertical = secondVertical - 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal + 1][secondVertical + 2] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal;
+                character->vertical = secondVertical + 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal + 2][secondVertical + 1] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal + 1;
+                character->vertical = secondVertical;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal][secondVertical + 1] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal - 1;
+                character->vertical = secondVertical;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+                
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+/*
+زوج
+
+i+1 j+1  SE
+i+1 j-1  SW
+i   j-1  NW
+i   j+1  NE
+i+1 j    S
+i-1 j    N
+
+
+فرد
+i-1 j-1 NW
+i-1 j+1 NE
+i   j-1 SE
+i   j+1 SW
+i+1 j   S
+i-1 j   N
+*/
 
 
 
