@@ -1,4 +1,9 @@
-#include "Header.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <math.h>
+#include <stdbool.h>
+#include <windows.h>
 #define firstPlayer 0
 #define secondPlayer 1
 #define enumPrint(E) (#E)
@@ -25,27 +30,6 @@ typedef struct Node
     struct Node* next;
 }Node;
 
-
-enum typeOfComponents{empty, block, well, wellBlocker, Fisrstamp, secondLamp, thirdLamp, fourthLamp, outherLamp, lampLocation, Roadblock, Exit};
-enum ORDER{beforeOrAfter, afterMovement, movementOrFunctionality, simultaneous};
-enum Char{SG = 1, SH, JW, JB, MS, IL, WG, JS};
-enum Direction{north, south, northEast, southEast, northWest, southWest};
-
-
-
-
-Character SergentGoodley = {"SG", "\033[1;34mS\033[1;31mG\033[0;38m", false, 4, beforeOrAfter};
-Character SherlockHolmes = {"SH", "\033[1;31mSH\033[0;38m", false, 3, afterMovement};
-Character JohnWatson = {"JW 2", "\033[1;33mJW\033[0;38m", false, 3, afterMovement};
-Character JeremyBert = {"JB", "\033[1;36mJB\033[0;38m", false, 3, beforeOrAfter};
-Character MissStealthy = {"MS", "\033[1;32mMS\033[0;38m", false, 3, simultaneous};
-Character InspectorLestrade = {"IL", "\033[1;34mIL\033[0;38m", false, 3, beforeOrAfter};
-Character SirWilliamGull = {"WG", "\033[1;35mWG\033[0;38m", false, 3, movementOrFunctionality};
-Character JohnSmith = {"JS", "\033[1;33mJS\033[0;38m", false, 3, beforeOrAfter};
-
-
-
-
 typedef struct PartMaP
 {
     int type;
@@ -58,10 +42,43 @@ typedef struct PartMaP
     Character *character;
 }part;
 
+enum typeOfComponents{empty, block, well, wellBlocker, Fisrstamp, secondLamp, thirdLamp, fourthLamp, outherLamp, lampLocation, Roadblock, Exit};
+enum ORDER{beforeOrAfter, afterMovement, movementOrFunctionality, simultaneous};
+enum Char{SG = 1, SH, JW, JB, MS, IL, WG, JS};
+enum Direction{north, south, northEast, southEast, northWest, southWest};
 
-void board(part** map, int horizontal, int vertical);
+Character SergentGoodley = {"SG", "\033[1;34mS\033[1;31mG\033[0;38m", false, 4, beforeOrAfter};
+Character SherlockHolmes = {"SH", "\033[1;31mSH\033[0;38m", false, 3, afterMovement};
+Character JohnWatson = {"JW 2", "\033[1;33mJW\033[0;38m", false, 3, afterMovement};
+Character JeremyBert = {"JB", "\033[1;36mJB\033[0;38m", false, 3, beforeOrAfter};
+Character MissStealthy = {"MS", "\033[1;32mMS\033[0;38m", false, 3, simultaneous};
+Character InspectorLestrade = {"IL", "\033[1;34mIL\033[0;38m", false, 3, beforeOrAfter};
+Character SirWilliamGull = {"WG", "\033[1;35mWG\033[0;38m", false, 3, movementOrFunctionality};
+Character JohnSmith = {"JS", "\033[1;33mJS\033[0;38m", false, 3, beforeOrAfter};
+
+void removeNodeByName(Node** head, char name[3]);
+void print(Node* head);
+Node* TheSuspects();
+Node** random();
+Node* newNode(Character* character);
+void addNode(Node** head, Node* newNode);
+int checkIsCorrect(Node* head, char name[3]);
+int game(part** map, int horizontal, int vertical);
 int menu();
 part** newGame();
+Character* removeNode(Node** head, int length);
+char* toString(int numberOne, int numberTwo);
+int checkIsCorrectForOperation(part** map, int horizontal, int vertical, int type);
+void exchange(part** map, int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical, int firstType, int secondType);
+void exchangeCharacter(part** map, int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical);
+void setVisible(part** map ,int horizontal ,int vertical);
+void board(part** map, int horizontal, int vertical);
+int** copyMap(part** map ,int horizontal ,int vertical);
+void solveMaze(Character* character, int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int firstHorizontal, int firstVertical, int length);
+bool isCanToGo(int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical, int length);
+int **pathLength(int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int secondHorizontal, int secondVertical);
+int **tap(int horizontal, int vertical);
+int checkDestination(part** map, int horizontal, int vertical, bool visible);
 void reset(part** map, int horizontal, int vertical);
 void Description();
 void DecelerationOfAimOfGame();
@@ -72,27 +89,162 @@ void DecelerationOfWell();
 void DecelerationOfBlockedPlaces();
 void DecelerationOfLamp();
 void DecelerationOfExit();
-Node* TheSuspects();
-void removeNodeByName(Node** head, char name[3]);
-int checkIsCorrect(Node* head, char name[3]);
-char* toString(int numberOne, int numberTwo);
-void help();
-int game(part** map, int horizontal, int vertical);
-void setVisible(part** map ,int horizontal ,int vertical);
-void exchangeCharacter(part** map, int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical);
-Character* removeNode(Node** head, int length);
-Node* newNode(Character* character);
-void addNode(Node** head, Node* newNode);
-Node** random();
-void print(Node* head);
-int checkIsCorrectForOperation(part** map, int horizontal, int vertical, int type);
-void exchange(part** map, int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical, int firstType, int secondType);
-int** copyMap(part** map ,int horizontal ,int vertical);
-int **pathLength(int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int secondHorizontal, int secondVertical);
+char* nameOfFile(int count);
+
+void printBlack() { printf("\033[0;30m"); }
+void printRed(){ printf("\033[0;31m"); }
+void printGreen() { printf("\033[1;32m"); }
+void printYellow() { printf("\033[0;33m"); }
+void printBlue() { printf("\033[0;34m"); }
+void printPurple() { printf("\033[0;35m"); }
+void printCyan() { printf("\033[0;36m"); }
+void printWhite() { printf("\033[0;37m"); }
+void resetColor() { printf("\033[0;38m"); }
+
+
+void printBlackHighLight() { printf("\033[0;40m"); }
+void printRedHighLight() { printf("\033[0;41m"); }
+void printGreenHighLight() { printf("\033[0;42m"); }
+void printYellowHighLight() { printf("\033[0;43m"); }
+void printBlueHighLight() { printf("\033[0;44m"); }
+void printPurpleHighLight() { printf("\033[0;45m"); }
+void printCyanHighLight() { printf("\033[0;46m"); }
+void printWhiteHighLight() { printf("\033[0;47m"); }
 
 
 
+int main()
+{
+    // srand(time(NULL));
 
+    part** map = newGame();
+
+    reset(map, 9, 13);
+
+    board(map, 9, 13);
+    // DecelerationOfBlockedPlaces();
+
+
+    // menu();
+
+}
+
+
+
+void removeNodeByName(Node** head, char name[3])
+{
+    if(strncmp((*head)->character->name, name, 2) == 0)
+    {
+        *head = (*head)->next;
+    }
+    else
+    {
+        for(Node* current = *head; current->next != NULL; current = current->next)
+            if(strncmp(current->next->character->name, name, 2) == 0)
+            {
+                current->next = current->next->next;
+                return;
+            }
+    }
+}
+
+void print(Node* head)
+{
+    for(Node* current = head; current != NULL; current = current->next)
+        printf("%s  " ,current->character->nameForPrint);
+}
+
+Node** random()
+{
+    int length = 8;
+    int current;
+
+    Node **head = (Node**) malloc(2 * sizeof(Node*));
+    head[0] = NULL;
+    head[1] = NULL;
+    addNode(&head[0], newNode(&SergentGoodley));
+    addNode(&head[0], newNode(&SherlockHolmes));
+    addNode(&head[0], newNode(&JohnWatson));
+    addNode(&head[0], newNode(&JeremyBert));
+    addNode(&head[0], newNode(&MissStealthy));
+    addNode(&head[0], newNode(&InspectorLestrade));
+    addNode(&head[0], newNode(&SirWilliamGull));
+    addNode(&head[0], newNode(&JohnSmith));
+
+    int j = 0;
+    while(j < 4)
+    {
+        addNode(&head[1] ,newNode(removeNode(&head[0], rand() % length)));
+        length--;
+        j++;
+    }
+    return head;
+}
+
+Node* TheSuspects()
+{
+    Node* result = NULL;
+    addNode(&result, newNode(&SergentGoodley));
+    addNode(&result, newNode(&SherlockHolmes));
+    addNode(&result, newNode(&JohnWatson));
+    addNode(&result, newNode(&JeremyBert));
+    addNode(&result, newNode(&MissStealthy));
+    addNode(&result, newNode(&InspectorLestrade));
+    addNode(&result, newNode(&SirWilliamGull));
+    addNode(&result, newNode(&JohnSmith));
+
+    return result;
+}
+
+Node* newNode(Character* character)
+{
+    Node* result = (Node*) malloc(sizeof(Node));
+    result->character = character;
+    result->next = NULL;
+    return result;
+}
+
+void addNode(Node** head, Node* newNode)
+{
+    if(*head == NULL)
+        *head = newNode;
+    else
+    {
+        Node* current = *head;
+        for(;current->next != NULL; current = current->next);
+        current->next = newNode;
+    }
+}
+
+Character* removeNode(Node** head, int length)
+{
+    Node* current = *head;
+    if(length == 0)
+    {
+        *head = (*head)->next;
+        
+        current->next = NULL;
+        return current->character;
+    }
+    else
+    {
+        for(int i = 0; i < length - 1; i++)
+            current = current->next;
+        
+        Node* result = current->next;
+        current->next = current->next->next;
+        
+        return result->character;
+    }
+}
+
+int checkIsCorrect(Node* head, char name[3])
+{
+    for(Node* current = head; current != NULL; current = current->next)
+        if(strncmp(current->character->name, name, 2) == 0)
+            return 1;
+    return 0;
+}
 
 int game(part** map, int horizontal, int vertical) // این تابع اصلی بازی است.
 {
@@ -550,6 +702,800 @@ int game(part** map, int horizontal, int vertical) // این تابع اصلی �
     return 1; 
 }
 
+part** newGame()
+{
+    int horizontal,vertical;
+    int type;
+    FILE* NewGame = fopen("NewGame.txt", "r");
+    
+    fscanf(NewGame, "%d %d", &horizontal, &vertical);
+    fgetc(NewGame);
+    part **map = (part**)malloc(horizontal * sizeof(part*));
+    for(int i = 0; i < horizontal; i++)
+    {
+        map[i] = (part*)malloc(vertical * sizeof(part));
+        for(int j = 0; j < vertical; j++)
+        {
+            fscanf(NewGame, "%d", &map[i][j].type);
+            map[i][j].character = NULL;
+            map[i][j].horizontal = i;
+            map[i][j].vertical = j;
+        }
+    }
+    fgetc(NewGame);
+    int i;
+    int j;
+
+
+    fscanf(NewGame, "%d %d\n", &i, &j);
+    map[i][j].character = &JohnWatson;
+    fscanf(NewGame, "%d %d\n", &i, &j);
+    map[i][j].character = &SirWilliamGull;
+    fscanf(NewGame, "%d %d\n", &i, &j);
+    map[i][j].character = &InspectorLestrade;
+    fscanf(NewGame, "%d %d\n", &i, &j);
+    map[i][j].character = &JohnSmith;
+    fscanf(NewGame, "%d %d\n", &i, &j);
+    map[i][j].character = &SherlockHolmes;
+    fscanf(NewGame, "%d %d\n", &i, &j);
+    map[i][j].character = &JeremyBert;
+    fscanf(NewGame, "%d %d\n", &i, &j);
+    map[i][j].character = &MissStealthy;
+    fscanf(NewGame, "%d %d\n", &i, &j);
+    map[i][j].character = &SergentGoodley;
+    
+    return map;
+}
+
+char* toString(int numberOne, int numberTwo)
+{
+    char* output = (char*)malloc(7 * sizeof(char));
+
+    if(numberOne < 10)
+    {
+        output[0] = ' ';
+        output[1] = numberOne + 48;
+    }
+    else
+    {
+        output[0] = numberOne / 10 + 48;
+        output[1] = numberOne % 10 + 48;
+    }
+    output[2] = ' ';
+    output[3] = ' ';
+
+    if(numberTwo < 10)
+    {
+        output[4] = numberTwo + 48;
+        output[5] = ' ';
+    }
+    else
+    {
+        output[4] = numberTwo / 10 + 48;
+        output[5] = numberTwo % 10 + 48;
+    }
+
+    output[6] = '\0';
+
+    return output;
+}
+
+int menu()
+{
+    system("cls");
+
+    printRed();
+    printf("\t\t\t\t\t\t\t\t\t             \033[3;33mMr Jack Board Game         \n\n");
+    printGreen();
+    printf("\t\t\t\t\t\t\t\t\t  * * * * * * * * * * * * * * * * * * * *\n");
+    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
+    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
+
+    printf("\t\t\t\t\t\t\t\t\t  *            ");
+    printf("\033[3;34m1 - New game");
+    printGreen();
+    printf("             *\n");
+
+    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
+
+    printf("\t\t\t\t\t\t\t\t\t  *            ");
+    printf("\033[3;34m2 - Load Game");
+    printGreen();
+    printf("            *\n");
+
+    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
+
+    printf("\t\t\t\t\t\t\t\t\t  *            ");
+    printf("\033[3;34m3 - Create Map");
+    printGreen();
+    printf("           *\n");
+
+    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
+    
+    printf("\t\t\t\t\t\t\t\t\t  *            ");
+    printf("\033[3;34m4 - Help game");
+    printGreen();
+    printf("            *\n");
+
+    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
+    
+    printf("\t\t\t\t\t\t\t\t\t  *            ");
+    printf("\033[3;34m5 - Exit");
+    printGreen();
+    printf("                 *\n");
+
+
+    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
+    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
+    printf("\t\t\t\t\t\t\t\t\t  * * * * * * * * * * * * * * * * * * * *\n");
+    printBlue();
+    printf("\n\t\t\t\t\t\t\t\t\t        Please enter your choice : ");
+
+    int choice;
+    
+    scanf("%d", &choice);
+    if(0 < choice && choice < 5)
+        return choice;
+    printf("\n\t\t\t\t\t\t\t\t\t        Please enter correctly!!!");
+    printf("\n\t\t\t\t\t\t\t\t\t   Plesse Press ENTER key to continue...");
+    getchar();
+    getchar();
+
+
+    menu();
+}
+
+void setVisible(part** map ,int horizontal ,int vertical) // این تابع هر سری چک می کند کدام کاراکتر های مرئی و کدام نامرئی هستند
+{
+    SergentGoodley.visible = false;
+    SherlockHolmes.visible = false;
+    JohnWatson.visible = false;
+    JeremyBert.visible = false;
+    MissStealthy.visible = false;
+    InspectorLestrade.visible = false;
+    SirWilliamGull.visible = false;
+    JohnSmith.visible = false;
+
+
+    // این قسمت کاراکتر های دور لامپ و کاراکتر هایی که در مجاورت هم هستند،مرئی می شوند.
+    for(int i = 0; i < horizontal; i++)
+        for(int j = 0; j < vertical; j++)
+        {
+            if(j % 2) // برای خانه های با مقدار افقی فرد
+            {
+                if(map[i][j].type > 3 && map[i][j].type < 9) // خانه های اطراف لامپ
+                {
+                    if(j - 1 >= 0)
+                        if(map[i][j - 1].character != NULL)
+                            map[i][j].character->visible = true;
+
+
+                    if(i - 1 >= 0 && j - 1 >= 0)
+                        if(map[i - 1][j - 1].character != NULL)
+                            map[i - 1][j - 1].character->visible = true;
+
+
+                    if(i - 1 >= 0)
+                        if(map[i - 1][j].character != NULL)
+                            map[i - 1][j].character->visible = true;
+
+                    if(i + 1 < horizontal)
+                        if(map[i + 1][j].character != NULL)
+                            map[i + 1][j].character->visible = true;
+
+                    if(j + 1 < vertical)
+                        if(map[i][j + 1].character != NULL)
+                            map[i][j + 1].character->visible = true;
+    
+                    if(i - 1 >= 0 && j + 1 < vertical)
+                        if(map[i - 1][j + 1].character != NULL)
+                            map[i - 1][j + 1].character->visible = true;
+                }
+                if(map[i][j].character != NULL) // کاراکتر های مجاور
+                {
+                    if(j - 1 >= 0)
+                        if(map[i][j - 1].character != NULL)
+                        {
+                            map[i][j].character->visible = true;
+                            map[i][j - 1].character->visible = true;
+                        }
+
+                    if(i - 1 >= 0 && j - 1 >= 0)
+                        if(map[i - 1][j - 1].character != NULL)
+                        {
+                            map[i][j].character->visible = true;
+                            map[i - 1][j - 1].character->visible = true;
+                        }
+
+                    if(i - 1 >= 0)
+                        if(map[i - 1][j].character != NULL)
+                        {
+                            map[i][j].character->visible = true;
+                            map[i - 1][j].character->visible = true;
+                        }
+
+                    if(i + 1 < horizontal)
+                        if(map[i + 1][j].character != NULL)
+                        {
+                            map[i][j].character->visible = true;
+                            map[i + 1][j].character->visible = true;
+                        }
+
+                    if(j + 1 < vertical)
+                        if(map[i][j + 1].character != NULL)
+                        {
+                            map[i][j].character->visible = true;
+                            map[i][j + 1].character->visible = true;
+                        }
+
+                    if(i - 1 >= 0 && j + 1 < vertical)
+                        if(map[i - 1][j + 1].character != NULL)
+                        {
+                            map[i][j].character->visible = true;
+                            map[i - 1][j + 1].character->visible = true;
+                        }   
+                }
+            
+            }
+            else // برای خانه های با مولفه افقی زوج
+            {
+                if(map[i][j].type > 3 && map[i][j].type < 9) // خانه های اطراف لامپ
+                {
+                    if(j - 1 >= 0)
+                        if(map[i][j - 1].character != NULL)
+                            map[i][j].character->visible = true;
+
+
+
+                    if(i + 1 < horizontal && j - 1 >= 0)
+                        if(map[i + 1][j - 1].character != NULL)
+                            map[i + 1][j - 1].character->visible = true;
+
+
+                    if(i - 1 >= 0)
+                        if(map[i - 1][j].character != NULL)
+                            map[i - 1][j].character->visible = true;
+
+                    if(i + 1 < horizontal)
+                        if(map[i + 1][j].character != NULL)
+                            map[i + 1][j].character->visible = true;
+
+                    if(j + 1 < vertical)
+                        if(map[i][j + 1].character != NULL)
+                            map[i][j + 1].character->visible = true;
+    
+                    if(i + 1 < horizontal && j + 1 < vertical)
+                        if(map[i + 1][j + 1].character != NULL)
+                            map[i + 1][j + 1].character->visible = true;
+                }
+                if(map[i][j].character != NULL) // کاراکتر های مجاور
+                {
+                    if(j - 1 >= 0)
+                        if(map[i][j - 1].character != NULL)
+                        {
+                            map[i][j].character->visible = true;
+                            map[i][j - 1].character->visible = true;
+                        }
+
+                    if(i + 1 < horizontal && j - 1 >= 0)
+                        if(map[i + 1][j - 1].character != NULL)
+                        {
+                            map[i][j].character->visible = true;
+                            map[i + 1][j - 1].character->visible = true;
+                        }
+
+                    if(i - 1 >= 0)
+                        if(map[i - 1][j].character != NULL)
+                        {
+                            map[i][j].character->visible = true;
+                            map[i - 1][j].character->visible = true;
+                        }
+
+                    if(i + 1 < horizontal)
+                        if(map[i + 1][j].character != NULL)
+                        {
+                            map[i][j].character->visible = true;
+                            map[i + 1][j].character->visible = true;
+                        }
+
+                    if(j + 1 < vertical)
+                        if(map[i][j + 1].character != NULL)
+                        {
+                            map[i][j].character->visible = true;
+                            map[i][j + 1].character->visible = true;
+                        }
+
+                    if(i + 1 < horizontal && j + 1 < vertical)
+                        if(map[i + 1][j + 1].character != NULL)
+                        {
+                            map[i][j].character->visible = true;
+                            map[i + 1][j + 1].character->visible = true;
+                        }   
+                }
+            }
+            
+        }
+    
+    // این قسمت کاراکتر های در امتداد نور جان واتسون مرئی می شوند
+    int i = JohnWatson.horizontal;
+    int j = JohnWatson.vertical;  
+    int direction = JohnWatson.name[3];  
+    if(direction == north)
+    {
+        for(int k = i - 1; k >= 0; k--)
+            if(map[k][j].character != NULL)
+                map[k][j].character->visible = true;
+    }
+    else if(direction == south)
+    {
+        for(int k = i + 1; k < horizontal; k++)
+            if(map[k][j].character != NULL)
+                map[k][j].character->visible = true;
+    }
+    else if(direction == northEast)
+    {
+        if(j % 2 == 0)
+            if(map[i][++j].character != NULL)
+                map[i][j].character->visible = true;
+
+        i++;
+        for(int k = i; k < horizontal; k++)
+        {
+            if(map[i][++j].character != NULL)
+                map[i][j].character->visible = true;
+            if(j < 0 || map[i][j + 1].type == 1)
+                break;
+            
+            if(map[i][++j].character != NULL)
+                map[i][j].character->visible = true;
+            if(j < 0 || map[i + 1][j + 1].type == 1)
+                break;
+        }
+    }
+    else if(direction == southEast)
+    {
+        if(j % 2 == 0)
+            if(map[i][++j].character != NULL)
+                map[i][j].character->visible = true;
+
+        i--;
+
+        for(int k = i; k >= 0; k--)
+        {
+            if(map[i][++j].character != NULL)
+                map[i][j].character->visible = true;
+            if(j < 0 || map[i][j + 1].type == 1)
+                break;
+            
+            if(map[i][++j].character != NULL)
+                map[i][j].character->visible = true;
+            if(j < 0 || map[i - 1][j + 1].type == 1)
+                break;
+        }
+    }
+    else if(direction == northWest)
+    {
+        if(j % 2 == 0)
+            if(map[i][--j].character != NULL)
+                map[i][j].character->visible = true;
+
+        i++;
+        for(int k = i; k < horizontal; k++)
+        {
+            if(map[i][--j].character != NULL)
+                map[i][j].character->visible = true;
+            if(j < 0 || map[i][j - 1].type == 1)
+                break;
+            
+            if(map[i][--j].character != NULL)
+                map[i][j].character->visible = true;
+            if(j < 0 || map[i + 1][j - 1].type == 1)
+                break;
+        }
+    }
+    else if(direction == southWest)
+    {
+        if(j % 2 == 0)
+            if(map[i][--j].character != NULL)
+                map[i][j].character->visible = true;
+
+        i--;
+
+        for(int k = i; k >= 0; k--)
+        {
+            if(map[i][--j].character != NULL)
+                map[i][j].character->visible = true;
+            if(j < 0 || map[i][j - 1].type == 1)
+                break;
+            
+            if(map[i][--j].character != NULL)
+                map[i][j].character->visible = true;
+            if(j < 0 || map[i - 1][j - 1].type == 1)
+                break;
+        }
+    }
+
+}
+
+int checkIsCorrectForOperation(part** map, int horizontal, int vertical, int type)
+{
+    if(map[horizontal][vertical].type == type)
+        return 1;
+    return 0;
+}
+
+void exchange(part** map, int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical, int firstType, int secondType)
+{
+    map[firstHorizontal][firstVertical].type = secondType;
+    map[secondHorizontal][secondVertical].type = firstType;
+}
+
+void exchangeCharacter(part** map, int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical)
+{
+    Character* current = map[firstHorizontal][firstVertical].character;
+    map[firstHorizontal][firstVertical].character = map[secondHorizontal][secondVertical].character;
+    map[secondHorizontal][secondVertical].character = current;
+}
+
+void board(part** map, int horizontal, int vertical)
+{
+    reset(map, horizontal, vertical);
+    system("cls");
+    if(vertical % 2 == 0)
+    {
+        for(int j = 1; j <= vertical / 2; j++)
+        {
+            printf("          ");
+
+            printf("______");
+        }
+        printf("\n ");
+        
+        for(int j = 1; j <= vertical / 2; j++)
+        {
+            printf("        ");
+
+            printf("/%s\\" ,map[0][2 * j - 1].firstLine); // سطر اول اندیس های فرد
+        }
+        printf("\n  ");
+        for(int j = 1; j <= vertical / 2; j++)
+        {
+            printf("______");
+
+            printf("/%s\\" ,map[0][2 * j - 1].secondLine); // سطر دوم اندیس های فرد
+        }
+        printf("\n");
+
+        for(int i = 0; i < horizontal; i++)
+        {
+            printf(" ");
+            for(int j = 0; j < vertical / 2; j++)
+            {
+                printf("/%s\\" ,map[i][2 * j].firstLine); // سطر اول اندیس های زوج
+                printf("%s" ,map[i][2 * j + 1].thirdLine); // سطر سوم اندیس های فرد
+            }
+            printf("/\n");
+
+            for(int j = 0; j < vertical / 2; j++)
+            {
+                printf("/%s\\" ,map[i][2 * j].secondLine); // سطر دوم اندیس های زوج
+
+                printf("%s" ,map[i][2 * j + 1].fourthLine); // سطر چهارم اندیس های فرد
+            }
+            printf("/\n");
+
+            for(int j = 0; j < vertical / 2; j++)
+            {
+                printf("\\%s/" ,map[i][2 * j].thirdLine); // سطر سوم اندیس های زوج
+
+                if(i == horizontal - 1)
+                    printf("      ");// سطر اول اندیس های فرد
+                else
+                    printf("%s" ,map[i + 1][2 * j + 1].firstLine);// سطر اول اندیس های فرد
+
+
+            }
+            if(i != horizontal - 1)
+                printf("\\");
+            printf("\n ");
+
+
+            for(int j = 1 ; j <= vertical / 2; j++)
+            {
+                printf("\\%s/" , map[i][2 * j - 2].fourthLine); // سطر چهارم اندیس های زوج
+
+                if(i == horizontal - 1)
+                    printf("        "); // سطر دوم اندیس های فرد
+                else
+                    printf("%s" ,map[i + 1][2 * j - 1].secondLine); // سطر دوم اندیس های فرد
+
+            }
+            if(i != horizontal - 1)
+                printf("\\");
+            printf("\n");
+        }
+    }
+    
+    else
+    {
+        for(int j = 1; j <= vertical / 2; j++)
+        {
+            printf("          ");
+            printf("______");
+        }
+        printf("\n ");
+
+        for(int j = 1; j <= vertical / 2; j++)
+        {
+            printf("        ");
+            printf("/%s\\" ,map[0][2 * j - 1].firstLine); // سطر اول اندیس های فرد
+        }
+        printf("\n");
+
+        printf("  ______");
+        for(int j = 1; j <= vertical / 2; j++)
+        {
+            printf("/%s\\" ,map[0][2 * j - 1].secondLine); // سطر دوم اندیس های فرد
+
+            printf("______");
+        }
+        printf("\n");
+
+
+        for(int i = 0; i < horizontal; i++)
+        {
+            printf(" /%s\\" ,map[i][0].firstLine); // سطر اول اندیس های زوج
+            for(int j = 1; j <= vertical / 2; j++)
+            {
+                printf("%s" ,map[i][2 * j - 1].thirdLine); // سطر سوم اندیس های فرد
+                printf("/%s\\" ,map[i][2 * j].firstLine); // سطر اول اندیس های زوج
+            }
+            printf("\n");
+
+            printf("/%s\\" , map[i][0].secondLine); // سطر دوم اندیس های زوج
+            for(int j = 1; j <= vertical / 2; j++)
+            {
+                printf("%s" ,map[i][2 * j - 1].fourthLine); // سطر چهارم اندیس های فرد
+
+                printf("/%s\\", map[i][2 * j].secondLine); // سطر دوم اندیس های زوج
+            }
+            printf("\n");
+
+            printf("\\%s/", map[i][0].thirdLine); // سطر سوم اندیس های زوج
+            for(int j = 1; j <= vertical / 2; j++)
+            {
+                if(i == horizontal - 1)
+                    printf("      ");
+                else
+                    printf("%s", map[i + 1][2 * j - 1].firstLine); // سطر اول اندیس های فرد
+
+                printf("\\%s/", map[i][2 * j].thirdLine); // سطر سوم اندیس های زوج
+            }
+            printf("\n");
+
+            printf(" \\%s/" ,map[i][0].fourthLine); // سطر چهارم اندیس های زوج
+            for(int j = 1; j <= vertical / 2; j++)
+            {
+                if(i == horizontal - 1)
+                    printf("        ");
+                else
+                    printf("%s", map[i  + 1][2 * j - 1].secondLine); // سطر دوم اندیس های فرد
+
+                printf("\\%s/" ,map[i][2 * j].fourthLine); // سطر چهارم اندیس های زوج
+            }
+            printf("\n");
+        }
+    }
+
+
+
+
+}
+
+int** copyMap(part** map ,int horizontal ,int vertical)
+{
+    int** result = (int**)malloc((horizontal + 2) * (sizeof(int*)));
+    for(int i = 0; i <= horizontal + 1; i++)
+        result[i] = (int*)malloc((vertical + 2) * (sizeof(int)));
+    
+    for (int i = 0; i <= horizontal + 1; i++) 
+    {
+        result[i][0] = 1;
+        result[i][vertical + 1] = 1;
+    }
+    for (int i = 0; i <= vertical + 1; i++) 
+    {
+        result[0][i] = 1;
+        result[horizontal + 1][i] = 1;
+    }
+    for(int i = 1; i <= horizontal; i++)
+        for(int j = 1; j <= vertical; j++)
+        {
+            int type = map[i - 1][j - 1].type;
+            if(type == empty || type == well || type == wellBlocker)
+                result[i][j] = 0;
+            else 
+                result[i][j] = 1;
+        }
+
+    return result;
+}
+
+bool isCanToGo(int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical, int length)
+{
+    int **tap = pathLength(horizontal, vertical, map, secondHorizontal, secondVertical);
+
+    if(length >= tap[firstHorizontal + 1][firstVertical + 1])
+        return true;
+    else
+        return false;
+}
+
+int **pathLength(int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int secondHorizontal, int secondVertical)
+{
+    int **tap = (int **)malloc((horizontal + 2) *sizeof(int*));
+    for(int i = 0; i < horizontal + 2; i++)
+    {
+        tap[i] = (int *)malloc((vertical + 2) * sizeof(int));
+        for(int j = 0; j < vertical + 2; j++)
+            tap[i][j] = 150;
+    }
+    int counter;
+
+
+    tap[secondHorizontal][secondVertical] = 0;
+
+    do
+    {
+        counter = 0;
+        for(int k = 1; k <= horizontal; k++)
+        {
+            for(int l = 1; l <= vertical; l++)
+            {
+                int c = tap[k][l];
+                if(map[k][l] == 0)
+                    if((k != secondHorizontal || l != secondVertical))
+                    {
+                        if((l % 2))
+                            tap[k][l] = Min(tap[k + 1][l], tap[k - 1][l], tap[k][l + 1], tap[k][l - 1], tap[k + 1][l + 1], tap[k + 1][l - 1]) + 1;
+
+                        else
+                            tap[k][l] = Min(tap[k + 1][l], tap[k - 1][l], tap[k][l + 1], tap[k][l - 1], tap[k - 1][l - 1], tap[k - 1][l + 1]) + 1;
+                    }
+                if(c != tap[k][l])
+                    counter++;
+            }
+        }
+
+
+
+    }while(counter != 0);
+
+
+    return tap;
+}
+
+void solveMaze(Character* character, int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int firstHorizontal, int firstVertical, int length)
+{
+    if(length == 0)
+        return;
+    int** tap = pathLength(horizontal, vertical, map, firstHorizontal, firstVertical);
+    for(int i = 0; i < length; i++)
+    {
+        int secondHorizontal = character->horizontal;
+        int secondVertical = character->vertical;
+        if(secondVertical % 2)
+        {
+            if(tap[secondHorizontal][secondVertical + 1] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal - 1;
+                character->vertical = secondVertical;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal + 2][secondVertical + 1] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal + 1;
+                character->vertical = secondVertical;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, (length - 1));
+            }
+            else if(tap[secondHorizontal + 1][secondVertical] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal;
+                character->vertical = secondVertical - 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal + 1][secondVertical + 2] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal;
+                character->vertical = secondVertical + 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal][secondVertical] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal - 1;
+                character->vertical = secondVertical - 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal][secondVertical + 2] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal - 1;
+                character->vertical = secondVertical + 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+        }
+        else
+        {
+            if(tap[secondHorizontal + 2][secondVertical + 2] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal + 1;
+                character->vertical = secondVertical + 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal + 2][secondVertical] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal + 1;
+                character->vertical = secondVertical - 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal + 1][secondVertical] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal;
+                character->vertical = secondVertical - 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal + 1][secondVertical + 2] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal;
+                character->vertical = secondVertical + 1;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal + 2][secondVertical + 1] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal + 1;
+                character->vertical = secondVertical;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+            else if(tap[secondHorizontal][secondVertical + 1] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
+            {
+                character->horizontal = secondHorizontal - 1;
+                character->vertical = secondVertical;
+                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
+            }
+                
+        }
+    }
+}
+
+int **tap(int horizontal, int vertical)
+{
+    int **result = (int **)malloc((horizontal + 2) *sizeof(int*));
+    for(int i = 0; i < horizontal + 2; i++)
+    {
+        result[i] = (int *)malloc((vertical + 2) * sizeof(int));
+        for(int j = 0; j < vertical + 2; j++)
+            result[i][j] = 100;
+    }
+    return result;
+}
+
+int checkDestination(part** map, int horizontal, int vertical, bool visible)
+{
+    if(map[horizontal][vertical].type == block)
+        return 0;
+    if(map[horizontal][vertical].type > 3 && map[horizontal][vertical].type < 9)
+        return 0;
+    if(map[horizontal][vertical].type == lampLocation)
+        return 0;
+    if(map[horizontal][vertical].type == Roadblock)
+        return 0;
+    if(map[horizontal][vertical].character != NULL)
+        return 0;
+    if(map[horizontal][vertical].type == Exit && visible)
+        return 0;
+
+    return 1;    
+}
+
 void reset(part** map, int horizontal, int vertical) // این تابع هر بار کل نقشه را بررسی می کند و هربار نقشه را پس از تغییر چاپ می کند.
 {
     for(int i = 0; i < horizontal; i++)
@@ -950,306 +1896,6 @@ void reset(part** map, int horizontal, int vertical) // این تابع هر ب�
     }
 }
 
-part** newGame()
-{
-    int horizontal,vertical;
-    int type;
-    FILE* NewGame = fopen("NewGame.txt", "r");
-    
-    fscanf(NewGame, "%d %d", &horizontal, &vertical);
-    fgetc(NewGame);
-    part **map = (part**)malloc(horizontal * sizeof(part*));
-    for(int i = 0; i < horizontal; i++)
-    {
-        map[i] = (part*)malloc(vertical * sizeof(part));
-        for(int j = 0; j < vertical; j++)
-        {
-            fscanf(NewGame, "%d", &map[i][j].type);
-            map[i][j].character = NULL;
-            map[i][j].horizontal = i;
-            map[i][j].vertical = j;
-        }
-    }
-    fgetc(NewGame);
-    int i;
-    int j;
-
-
-    fscanf(NewGame, "%d %d\n", &i, &j);
-    map[i][j].character = &JohnWatson;
-    fscanf(NewGame, "%d %d\n", &i, &j);
-    map[i][j].character = &SirWilliamGull;
-    fscanf(NewGame, "%d %d\n", &i, &j);
-    map[i][j].character = &InspectorLestrade;
-    fscanf(NewGame, "%d %d\n", &i, &j);
-    map[i][j].character = &JohnSmith;
-    fscanf(NewGame, "%d %d\n", &i, &j);
-    map[i][j].character = &SherlockHolmes;
-    fscanf(NewGame, "%d %d\n", &i, &j);
-    map[i][j].character = &JeremyBert;
-    fscanf(NewGame, "%d %d\n", &i, &j);
-    map[i][j].character = &MissStealthy;
-    fscanf(NewGame, "%d %d\n", &i, &j);
-    map[i][j].character = &SergentGoodley;
-    
-    return map;
-}
-
-void board(part** map, int horizontal, int vertical)
-{
-    int z = 65;
-
-    reset(map, horizontal, vertical);
-    system("cls");
-    if(vertical % 2 == 0)
-    {
-        for(int j = 1; j <= vertical / 2; j++)
-        {
-            printf("          ");
-
-            printf("______");
-        }
-        printf("\n ");
-        
-        for(int j = 1; j <= vertical / 2; j++)
-        {
-            printf("        ");
-
-            printf("/%s\\" ,map[0][2 * j - 1].firstLine); // سطر اول اندیس های فرد
-        }
-        printf("\n  ");
-        for(int j = 1; j <= vertical / 2; j++)
-        {
-            printf("______");
-
-            printf("/%s\\" ,map[0][2 * j - 1].secondLine); // سطر دوم اندیس های فرد
-        }
-        printf("\n");
-
-        for(int i = 0; i < horizontal; i++)
-        {
-            printf(" ");
-            for(int j = 0; j < vertical / 2; j++)
-            {
-                printf("/%s\\" ,map[i][2 * j].firstLine); // سطر اول اندیس های زوج
-                printf("%s" ,map[i][2 * j + 1].thirdLine); // سطر سوم اندیس های فرد
-            }
-            printf("/\n");
-
-            for(int j = 0; j < vertical / 2; j++)
-            {
-                printf("/%s\\" ,map[i][2 * j].secondLine); // سطر دوم اندیس های زوج
-
-                printf("%s" ,map[i][2 * j + 1].fourthLine); // سطر چهارم اندیس های فرد
-            }
-            printf("/\n");
-
-            for(int j = 0; j < vertical / 2; j++)
-            {
-                printf("\\%s/" ,map[i][2 * j].thirdLine); // سطر سوم اندیس های زوج
-
-                if(i == horizontal - 1)
-                    printf("      ");// سطر اول اندیس های فرد
-                else
-                    printf("%s" ,map[i + 1][2 * j + 1].firstLine);// سطر اول اندیس های فرد
-
-
-            }
-            if(i != horizontal - 1)
-                printf("\\");
-            printf("\n ");
-
-
-            for(int j = 1 ; j <= vertical / 2; j++)
-            {
-                printf("\\%s/" , map[i][2 * j - 2].fourthLine); // سطر چهارم اندیس های زوج
-
-                if(i == horizontal - 1)
-                    printf("        "); // سطر دوم اندیس های فرد
-                else
-                    printf("%s" ,map[i + 1][2 * j - 1].secondLine); // سطر دوم اندیس های فرد
-
-            }
-            if(i != horizontal - 1)
-                printf("\\");
-            printf("\n");
-        }
-    }
-    
-    else
-    {
-        for(int j = 1; j <= vertical / 2; j++)
-        {
-            printf("          ");
-            printf("______");
-        }
-        printf("\n ");
-
-        for(int j = 1; j <= vertical / 2; j++)
-        {
-            printf("        ");
-            printf("/%s\\" ,map[0][2 * j - 1].firstLine); // سطر اول اندیس های فرد
-        }
-        printf("\n");
-
-        printf("  ______");
-        for(int j = 1; j <= vertical / 2; j++)
-        {
-            printf("/%s\\" ,map[0][2 * j - 1].secondLine); // سطر دوم اندیس های فرد
-
-            printf("______");
-        }
-        printf("\n");
-
-
-        for(int i = 0; i < horizontal; i++)
-        {
-            printf(" /%s\\" ,map[i][0].firstLine); // سطر اول اندیس های زوج
-            for(int j = 1; j <= vertical / 2; j++)
-            {
-                printf("%s" ,map[i][2 * j - 1].thirdLine); // سطر سوم اندیس های فرد
-                printf("/%s\\" ,map[i][2 * j].firstLine); // سطر اول اندیس های زوج
-            }
-            printf("\n");
-
-            printf("/%s\\" , map[i][0].secondLine); // سطر دوم اندیس های زوج
-            for(int j = 1; j <= vertical / 2; j++)
-            {
-                printf("%s" ,map[i][2 * j - 1].fourthLine); // سطر چهارم اندیس های فرد
-
-                printf("/%s\\", map[i][2 * j].secondLine); // سطر دوم اندیس های زوج
-            }
-            printf("\n");
-
-            printf("\\%s/", map[i][0].thirdLine); // سطر سوم اندیس های زوج
-            for(int j = 1; j <= vertical / 2; j++)
-            {
-                if(i == horizontal - 1)
-                    printf("      ");
-                else
-                    printf("%s", map[i + 1][2 * j - 1].firstLine); // سطر اول اندیس های فرد
-
-                printf("\\%s/", map[i][2 * j].thirdLine); // سطر سوم اندیس های زوج
-            }
-            printf("\n");
-
-            printf(" \\%s/" ,map[i][0].fourthLine); // سطر چهارم اندیس های زوج
-            for(int j = 1; j <= vertical / 2; j++)
-            {
-                if(i == horizontal - 1)
-                    printf("        ");
-                else
-                    printf("%s", map[i  + 1][2 * j - 1].secondLine); // سطر دوم اندیس های فرد
-
-                printf("\\%s/" ,map[i][2 * j].fourthLine); // سطر چهارم اندیس های زوج
-            }
-            printf("\n");
-        }
-    }
-
-
-
-
-}
-
-char* toString(int numberOne, int numberTwo)
-{
-    char* output = (char*)malloc(7 * sizeof(char));
-
-    if(numberOne < 10)
-    {
-        output[0] = ' ';
-        output[1] = numberOne + 48;
-    }
-    else
-    {
-        output[0] = numberOne / 10 + 48;
-        output[1] = numberOne % 10 + 48;
-    }
-    output[2] = ' ';
-    output[3] = ' ';
-
-    if(numberTwo < 10)
-    {
-        output[4] = numberTwo + 48;
-        output[5] = ' ';
-    }
-    else
-    {
-        output[4] = numberTwo / 10 + 48;
-        output[5] = numberTwo % 10 + 48;
-    }
-
-    output[6] = '\0';
-
-    return output;
-}
-
-int menu()
-{
-    system("cls");
-
-    printRed();
-    printf("\t\t\t\t\t\t\t\t\t             \033[3;33mMr Jack Board Game         \n\n");
-    printGreen();
-    printf("\t\t\t\t\t\t\t\t\t  * * * * * * * * * * * * * * * * * * * *\n");
-    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
-    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
-
-    printf("\t\t\t\t\t\t\t\t\t  *            ");
-    printf("\033[3;34m1 - New game");
-    printGreen();
-    printf("             *\n");
-
-    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
-
-    printf("\t\t\t\t\t\t\t\t\t  *            ");
-    printf("\033[3;34m2 - Load Game");
-    printGreen();
-    printf("            *\n");
-
-    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
-
-    printf("\t\t\t\t\t\t\t\t\t  *            ");
-    printf("\033[3;34m3 - Create Map");
-    printGreen();
-    printf("           *\n");
-
-    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
-    
-    printf("\t\t\t\t\t\t\t\t\t  *            ");
-    printf("\033[3;34m4 - Help game");
-    printGreen();
-    printf("            *\n");
-
-    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
-    
-    printf("\t\t\t\t\t\t\t\t\t  *            ");
-    printf("\033[3;34m5 - Exit");
-    printGreen();
-    printf("                 *\n");
-
-
-    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
-    printf("\t\t\t\t\t\t\t\t\t  *                                     *\n");
-    printf("\t\t\t\t\t\t\t\t\t  * * * * * * * * * * * * * * * * * * * *\n");
-    printBlue();
-    printf("\n\t\t\t\t\t\t\t\t\t        Please enter your choice : ");
-
-    int choice;
-    
-    scanf("%d", &choice);
-    if(0 < choice && choice < 5)
-        return choice;
-    printf("\n\t\t\t\t\t\t\t\t\t        Please enter correctly!!!");
-    printf("\n\t\t\t\t\t\t\t\t\t   Plesse Press ENTER key to continue...");
-    getchar();
-    getchar();
-
-
-    menu();
-}
-
 void Description()
 {
     system("cls");
@@ -1354,14 +2000,14 @@ void DecelerationOfCharacters()
     printf("\033[1;31mContent of the game\033[0m\n\n");
 
     printf("1 - Characters: \n");
-    printf(" *Sherlock Holmes %s\n" ,SherlockHolmes.nameForPrint);
-    printf(" *John H. Watson %s\n" ,JohnWatson.nameForPrint);
-    printf(" *John Smith %s\n" ,JohnSmith.nameForPrint);
-    printf(" *Inspector Lestrade %s\n" ,InspectorLestrade.nameForPrint);
-    printf(" *Miss Stealthy %s\n" ,MissStealthy.nameForPrint);
-    printf(" *Sergeant Goodley %s\n" ,SergentGoodley.nameForPrint);
-    printf(" *Sir William Gull %s\n" ,SirWilliamGull.nameForPrint);
-    printf(" *Jeremy Bert %s\n" ,JeremyBert.nameForPrint);
+    printf(" *Sherlock Holmes %s\n" ,"\033[1;34mS\033[1;31mG\033[0;38m");
+    printf(" *John H. Watson %s\n" ,"\033[1;31mSH\033[0;38m");
+    printf(" *John Smith %s\n" ,"\033[1;33mJW\033[0;38m");
+    printf(" *Inspector Lestrade %s\n" ,"\033[1;36mJB\033[0;38m");
+    printf(" *Miss Stealthy %s\n" ,"\033[1;32mMS\033[0;38m");
+    printf(" *Sergeant Goodley %s\n" ,"\033[1;34mIL\033[0;38m");
+    printf(" *Sir William Gull %s\n" ,"\033[1;35mWG\033[0;38m");
+    printf(" *Jeremy Bert %s\n" ,"\033[1;33mJS\033[0;38m");
 
 
     int choice;
@@ -1537,520 +2183,6 @@ void DecelerationOfExit()
         Description();
 }
 
-Node* newNode(Character* character)
-{
-    Node* result = (Node*) malloc(sizeof(Node));
-    result->character = character;
-    result->next = NULL;
-    return result;
-}
-
-void addNode(Node** head, Node* newNode)
-{
-    if(*head == NULL)
-        *head = newNode;
-    else
-    {
-        Node* current = *head;
-        for(;current->next != NULL; current = current->next);
-        current->next = newNode;
-    }
-}
-
-Character* removeNode(Node** head, int length)
-{
-    Node* current = *head;
-    if(length == 0)
-    {
-        *head = (*head)->next;
-        
-        current->next = NULL;
-        return current->character;
-    }
-    else
-    {
-        for(int i = 0; i < length - 1; i++)
-            current = current->next;
-        
-        Node* result = current->next;
-        current->next = current->next->next;
-        
-        return result->character;
-    }
-}
-
-void removeNodeByName(Node** head, char name[3])
-{
-    if(strncmp((*head)->character->name, name, 2) == 0)
-    {
-        *head = (*head)->next;
-    }
-    else
-    {
-        for(Node* current = *head; current->next != NULL; current = current->next)
-            if(strncmp(current->next->character->name, name, 2) == 0)
-            {
-                current->next = current->next->next;
-                return;
-            }
-    }
-}
-
-void print(Node* head)
-{
-    for(Node* current = head; current != NULL; current = current->next)
-        printf("%s  " ,current->character->nameForPrint);
-}
-
-Node** random()
-{
-    int length = 8;
-    int current;
-
-    Node **head = (Node**) malloc(2 * sizeof(Node*));
-    head[0] = NULL;
-    head[1] = NULL;
-    addNode(&head[0], newNode(&SergentGoodley));
-    addNode(&head[0], newNode(&SherlockHolmes));
-    addNode(&head[0], newNode(&JohnWatson));
-    addNode(&head[0], newNode(&JeremyBert));
-    addNode(&head[0], newNode(&MissStealthy));
-    addNode(&head[0], newNode(&InspectorLestrade));
-    addNode(&head[0], newNode(&SirWilliamGull));
-    addNode(&head[0], newNode(&JohnSmith));
-
-    int j = 0;
-    while(j < 4)
-    {
-        addNode(&head[1] ,newNode(removeNode(&head[0], rand() % length)));
-        length--;
-        j++;
-    }
-    return head;
-}
-
-Node* TheSuspects()
-{
-    Node* result = NULL;
-    addNode(&result, newNode(&SergentGoodley));
-    addNode(&result, newNode(&SherlockHolmes));
-    addNode(&result, newNode(&JohnWatson));
-    addNode(&result, newNode(&JeremyBert));
-    addNode(&result, newNode(&MissStealthy));
-    addNode(&result, newNode(&InspectorLestrade));
-    addNode(&result, newNode(&SirWilliamGull));
-    addNode(&result, newNode(&JohnSmith));
-
-    return result;
-}
-
-int checkIsCorrect(Node* head, char name[3])
-{
-    for(Node* current = head; current != NULL; current = current->next)
-        if(strncmp(current->character->name, name, 2) == 0)
-            return 1;
-    return 0;
-}
-
-void setVisible(part** map ,int horizontal ,int vertical) // این تابع هر سری چک می کند کدام کاراکتر های مرئی و کدام نامرئی هستند
-{
-    SergentGoodley.visible = false;
-    SherlockHolmes.visible = false;
-    JohnWatson.visible = false;
-    JeremyBert.visible = false;
-    MissStealthy.visible = false;
-    InspectorLestrade.visible = false;
-    SirWilliamGull.visible = false;
-    JohnSmith.visible = false;
-
-
-    // این قسمت کاراکتر های دور لامپ و کاراکتر هایی که در مجاورت هم هستند،مرئی می شوند.
-    for(int i = 0; i < horizontal; i++)
-        for(int j = 0; j < vertical; j++)
-        {
-            if(j % 2) // برای خانه های با مقدار افقی فرد
-            {
-                if(map[i][j].type > 3 && map[i][j].type < 9) // خانه های اطراف لامپ
-                {
-                    if(j - 1 >= 0)
-                        if(map[i][j - 1].character != NULL)
-                            map[i][j].character->visible = true;
-
-
-                    if(i - 1 >= 0 && j - 1 >= 0)
-                        if(map[i - 1][j - 1].character != NULL)
-                            map[i - 1][j - 1].character->visible = true;
-
-
-                    if(i - 1 >= 0)
-                        if(map[i - 1][j].character != NULL)
-                            map[i - 1][j].character->visible = true;
-
-                    if(i + 1 < horizontal)
-                        if(map[i + 1][j].character != NULL)
-                            map[i + 1][j].character->visible = true;
-
-                    if(j + 1 < vertical)
-                        if(map[i][j + 1].character != NULL)
-                            map[i][j + 1].character->visible = true;
-    
-                    if(i - 1 >= 0 && j + 1 < vertical)
-                        if(map[i - 1][j + 1].character != NULL)
-                            map[i - 1][j + 1].character->visible = true;
-                }
-                if(map[i][j].character != NULL) // کاراکتر های مجاور
-                {
-                    if(j - 1 >= 0)
-                        if(map[i][j - 1].character != NULL)
-                        {
-                            map[i][j].character->visible = true;
-                            map[i][j - 1].character->visible = true;
-                        }
-
-                    if(i - 1 >= 0 && j - 1 >= 0)
-                        if(map[i - 1][j - 1].character != NULL)
-                        {
-                            map[i][j].character->visible = true;
-                            map[i - 1][j - 1].character->visible = true;
-                        }
-
-                    if(i - 1 >= 0)
-                        if(map[i - 1][j].character != NULL)
-                        {
-                            map[i][j].character->visible = true;
-                            map[i - 1][j].character->visible = true;
-                        }
-
-                    if(i + 1 < horizontal)
-                        if(map[i + 1][j].character != NULL)
-                        {
-                            map[i][j].character->visible = true;
-                            map[i + 1][j].character->visible = true;
-                        }
-
-                    if(j + 1 < vertical)
-                        if(map[i][j + 1].character != NULL)
-                        {
-                            map[i][j].character->visible = true;
-                            map[i][j + 1].character->visible = true;
-                        }
-
-                    if(i - 1 >= 0 && j + 1 < vertical)
-                        if(map[i - 1][j + 1].character != NULL)
-                        {
-                            map[i][j].character->visible = true;
-                            map[i - 1][j + 1].character->visible = true;
-                        }   
-                }
-            
-            }
-            else // برای خانه های با مولفه افقی زوج
-            {
-                if(map[i][j].type > 3 && map[i][j].type < 9) // خانه های اطراف لامپ
-                {
-                    if(j - 1 >= 0)
-                        if(map[i][j - 1].character != NULL)
-                            map[i][j].character->visible = true;
-
-
-
-                    if(i + 1 < horizontal && j - 1 >= 0)
-                        if(map[i + 1][j - 1].character != NULL)
-                            map[i + 1][j - 1].character->visible = true;
-
-
-                    if(i - 1 >= 0)
-                        if(map[i - 1][j].character != NULL)
-                            map[i - 1][j].character->visible = true;
-
-                    if(i + 1 < horizontal)
-                        if(map[i + 1][j].character != NULL)
-                            map[i + 1][j].character->visible = true;
-
-                    if(j + 1 < vertical)
-                        if(map[i][j + 1].character != NULL)
-                            map[i][j + 1].character->visible = true;
-    
-                    if(i + 1 < horizontal && j + 1 < vertical)
-                        if(map[i + 1][j + 1].character != NULL)
-                            map[i + 1][j + 1].character->visible = true;
-                }
-                if(map[i][j].character != NULL) // کاراکتر های مجاور
-                {
-                    if(j - 1 >= 0)
-                        if(map[i][j - 1].character != NULL)
-                        {
-                            map[i][j].character->visible = true;
-                            map[i][j - 1].character->visible = true;
-                        }
-
-                    if(i + 1 < horizontal && j - 1 >= 0)
-                        if(map[i + 1][j - 1].character != NULL)
-                        {
-                            map[i][j].character->visible = true;
-                            map[i + 1][j - 1].character->visible = true;
-                        }
-
-                    if(i - 1 >= 0)
-                        if(map[i - 1][j].character != NULL)
-                        {
-                            map[i][j].character->visible = true;
-                            map[i - 1][j].character->visible = true;
-                        }
-
-                    if(i + 1 < horizontal)
-                        if(map[i + 1][j].character != NULL)
-                        {
-                            map[i][j].character->visible = true;
-                            map[i + 1][j].character->visible = true;
-                        }
-
-                    if(j + 1 < vertical)
-                        if(map[i][j + 1].character != NULL)
-                        {
-                            map[i][j].character->visible = true;
-                            map[i][j + 1].character->visible = true;
-                        }
-
-                    if(i + 1 < horizontal && j + 1 < vertical)
-                        if(map[i + 1][j + 1].character != NULL)
-                        {
-                            map[i][j].character->visible = true;
-                            map[i + 1][j + 1].character->visible = true;
-                        }   
-                }
-            }
-            
-        }
-    
-    // این قسمت کاراکتر های در امتداد نور جان واتسون مرئی می شوند
-    int i = JohnWatson.horizontal;
-    int j = JohnWatson.vertical;  
-    int direction = JohnWatson.name[3];  
-    if(direction == north)
-    {
-        for(int k = i - 1; k >= 0; k--)
-            if(map[k][j].character != NULL)
-                map[k][j].character->visible = true;
-    }
-    else if(direction == south)
-    {
-        for(int k = i + 1; k < horizontal; k++)
-            if(map[k][j].character != NULL)
-                map[k][j].character->visible = true;
-    }
-    else if(direction == northEast)
-    {
-        if(j % 2 == 0)
-            if(map[i][++j].character != NULL)
-                map[i][j].character->visible = true;
-
-        i++;
-        for(int k = i; k < horizontal; k++)
-        {
-            if(map[i][++j].character != NULL)
-                map[i][j].character->visible = true;
-            if(j < 0 || map[i][j + 1].type == 1)
-                break;
-            
-            if(map[i][++j].character != NULL)
-                map[i][j].character->visible = true;
-            if(j < 0 || map[i + 1][j + 1].type == 1)
-                break;
-        }
-    }
-    else if(direction == southEast)
-    {
-        if(j % 2 == 0)
-            if(map[i][++j].character != NULL)
-                map[i][j].character->visible = true;
-
-        i--;
-
-        for(int k = i; k >= 0; k--)
-        {
-            if(map[i][++j].character != NULL)
-                map[i][j].character->visible = true;
-            if(j < 0 || map[i][j + 1].type == 1)
-                break;
-            
-            if(map[i][++j].character != NULL)
-                map[i][j].character->visible = true;
-            if(j < 0 || map[i - 1][j + 1].type == 1)
-                break;
-        }
-    }
-    else if(direction == northWest)
-    {
-        if(j % 2 == 0)
-            if(map[i][--j].character != NULL)
-                map[i][j].character->visible = true;
-
-        i++;
-        for(int k = i; k < horizontal; k++)
-        {
-            if(map[i][--j].character != NULL)
-                map[i][j].character->visible = true;
-            if(j < 0 || map[i][j - 1].type == 1)
-                break;
-            
-            if(map[i][--j].character != NULL)
-                map[i][j].character->visible = true;
-            if(j < 0 || map[i + 1][j - 1].type == 1)
-                break;
-        }
-    }
-    else if(direction == southWest)
-    {
-        if(j % 2 == 0)
-            if(map[i][--j].character != NULL)
-                map[i][j].character->visible = true;
-
-        i--;
-
-        for(int k = i; k >= 0; k--)
-        {
-            if(map[i][--j].character != NULL)
-                map[i][j].character->visible = true;
-            if(j < 0 || map[i][j - 1].type == 1)
-                break;
-            
-            if(map[i][--j].character != NULL)
-                map[i][j].character->visible = true;
-            if(j < 0 || map[i - 1][j - 1].type == 1)
-                break;
-        }
-    }
-
-}
-
-int checkIsCorrectForOperation(part** map, int horizontal, int vertical, int type)
-{
-    if(map[horizontal][vertical].type == type)
-        return 1;
-    return 0;
-}
-
-void exchange(part** map, int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical, int firstType, int secondType)
-{
-    map[firstHorizontal][firstVertical].type = secondType;
-    map[secondHorizontal][secondVertical].type = firstType;
-}
-
-void exchangeCharacter(part** map, int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical)
-{
-    Character* current = map[firstHorizontal][firstVertical].character;
-    map[firstHorizontal][firstVertical].character = map[secondHorizontal][secondVertical].character;
-    map[secondHorizontal][secondVertical].character = current;
-}
-
-int checkDestination(part** map, int horizontal, int vertical, bool visible)
-{
-    if(map[horizontal][vertical].type == block)
-        return 0;
-    if(map[horizontal][vertical].type > 3 && map[horizontal][vertical].type < 9)
-        return 0;
-    if(map[horizontal][vertical].type == lampLocation)
-        return 0;
-    if(map[horizontal][vertical].type == Roadblock)
-        return 0;
-    if(map[horizontal][vertical].character != NULL)
-        return 0;
-    if(map[horizontal][vertical].type == Exit && visible)
-        return 0;
-
-    return 1;    
-}
-
-
-// void solveMaze(int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical, int tap[secondHorizontal][secondVertical], int map[secondHorizontal][secondVertical], int* output, int count)
-// {
-//     if(!(firstVertical % 2))
-//     {
-//         if(tap[firstHorizontal - 1][firstVertical] == tap[firstHorizontal][firstVertical] - 1)
-//         {
-//             output[count] = north;
-//             solveMaze(firstHorizontal - 1, firstVertical,secondHorizontal, secondVertical, tap, map, output, count++);
-//         }
-//         else if(tap[firstHorizontal + 1][firstVertical] == tap[firstHorizontal][firstVertical] - 1)
-//         {
-//             output[count] = south;
-//             solveMaze(firstHorizontal + 1, firstVertical,secondHorizontal, secondVertical, tap, map, output, count++);
-//         }
-//         else if(tap[firstHorizontal][firstVertical - 1] == tap[firstHorizontal][firstVertical] - 1)
-//         {
-//             output[count] = southEast;
-//             solveMaze(firstHorizontal, firstVertical - 1,secondHorizontal, secondVertical, tap, map, output, count++);
-//         }
-//         else if(tap[firstHorizontal][firstVertical + 1] == tap[firstHorizontal][firstVertical] - 1)
-//         {
-//             output[count] = southWest;
-//             solveMaze(firstHorizontal, firstVertical + 1,secondHorizontal, secondVertical, tap, map, output, count++);
-//         }
-//         else if(tap[firstHorizontal - 1][firstVertical - 1] == tap[firstHorizontal][firstVertical] - 1)
-//         {
-//             output[count] = northWest;
-//             solveMaze(firstHorizontal - 1, firstVertical - 1,secondHorizontal, secondVertical, tap, map, output, count++);
-//         }
-//         else if(tap[firstHorizontal - 1][firstVertical + 1] == tap[firstHorizontal][firstVertical] - 1)
-//         {
-//             output[count] = northEast;
-//             solveMaze(firstHorizontal - 1, firstVertical + 1,secondHorizontal, secondVertical, tap, map, output, count++);
-//         }
-//     }
-//     else
-//     {
-//         if(tap[firstHorizontal + 1][firstVertical + 1] == tap[firstHorizontal][firstVertical] - 1)
-//         {
-//             output[count] = southEast;
-//             solveMaze(firstHorizontal + 1, firstVertical + 1,secondHorizontal, secondVertical, tap, map, output, count++);
-//         }
-//         else if(tap[firstHorizontal + 1][firstVertical - 1] == tap[firstHorizontal][firstVertical] - 1)
-//         {
-//             output[count] = southWest;
-//             solveMaze(firstHorizontal + 1, firstVertical - 1,secondHorizontal, secondVertical, tap, map, output, count++);
-//         }
-//         else if(tap[firstHorizontal][firstVertical - 1] == tap[firstHorizontal][firstVertical] - 1)
-//         {
-//             output[count] = northWest;
-//             solveMaze(firstHorizontal, firstVertical - 1,secondHorizontal, secondVertical, tap, map, output, count++);
-//         }
-//         else if(tap[firstHorizontal][firstVertical + 1] == tap[firstHorizontal][firstVertical] - 1)
-//         {
-//             output[count] = northEast;
-//             solveMaze(firstHorizontal, firstVertical + 1,secondHorizontal, secondVertical, tap, map, output, count++);
-//         }
-//         else if(tap[firstHorizontal + 1][firstVertical] == tap[firstHorizontal][firstVertical] - 1)
-//         {
-//             output[count] = south;
-//             solveMaze(firstHorizontal + 1, firstVertical,secondHorizontal, secondVertical, tap, map, output, count++);
-//         }
-//         else if(tap[firstHorizontal - 1][firstVertical] == tap[firstHorizontal][firstVertical] - 1)
-//         {
-//             output[count] = north;
-//             solveMaze(firstHorizontal - 1, firstVertical,secondHorizontal, secondVertical, tap, map, output, count++);
-//         }
-            
-//     }
-// }
-
-// char* findDirection(part** map, int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical)
-// {
-//     int **copyMap = copyMap(map, )
-// }
-
-
-int **tap(int horizontal, int vertical)
-{
-    int **result = (int **)malloc((horizontal + 2) *sizeof(int*));
-    for(int i = 0; i < horizontal + 2; i++)
-    {
-        result[i] = (int *)malloc((vertical + 2) * sizeof(int));
-        for(int j = 0; j < vertical + 2; j++)
-            result[i][j] = 100;
-    }
-    return result;
-}
 
 char* nameOfFile(int count)
 {
@@ -2063,252 +2195,3 @@ char* nameOfFile(int count)
 
     return output;
 }
-
-int main()
-{
-    // srand(time(NULL));
-
-    part** map = newGame();
-
-
-    DecelerationOfBlockedPlaces();
-
-
-
-
-    // s %s\n" ,(*head)->character->nameForPrint ,(*head)->next->character->nameForPrint ,(*head)->next->next->character->nameForPrint ,(*head)->next->next->next->character->nameForPrint);
-    // int choice = menu();
-    // switch (choice)
-    // {
-    //     case 1: // New Game
-    //     {
-    //         game();
-    //         break;
-    //     }
-    //     case 2: // Load Game
-    //     {
-
-    //         break;
-    //     }
-    //     case 3: // Create Map
-    //     {
-
-    //         break;
-    //     }
-    //     case 4: // Help
-    //     {
-    //         Description();
-    //         break;
-    //     }
-    //     case 5:
-    //         return 0;
-    // }
-}
-
-int** copyMap(part** map ,int horizontal ,int vertical)
-{
-    int** result = (int**)malloc((horizontal + 2) * (sizeof(int*)));
-    for(int i = 0; i <= horizontal + 1; i++)
-        result[i] = (int*)malloc((vertical + 2) * (sizeof(int)));
-    
-    for (int i = 0; i <= horizontal + 1; i++) 
-    {
-        result[i][0] = 1;
-        result[i][vertical + 1] = 1;
-    }
-    for (int i = 0; i <= vertical + 1; i++) 
-    {
-        result[0][i] = 1;
-        result[horizontal + 1][i] = 1;
-    }
-    for(int i = 1; i <= horizontal; i++)
-        for(int j = 1; j <= vertical; j++)
-        {
-            int type = map[i - 1][j - 1].type;
-            if(type == empty || type == well || type == wellBlocker)
-                result[i][j] = 0;
-            else 
-                result[i][j] = 1;
-        }
-
-    return result;
-}
-
-
-bool isCanToGo(int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int firstHorizontal, int firstVertical, int secondHorizontal, int secondVertical, int length)
-{
-    int **tap = pathLength(horizontal, vertical, map, secondHorizontal, secondVertical);
-
-    if(length >= tap[firstHorizontal + 1][firstVertical + 1])
-        return true;
-    else
-        return false;
-}
-
-int **pathLength(int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int secondHorizontal, int secondVertical)
-{
-    int **tap = (int **)malloc((horizontal + 2) *sizeof(int*));
-    for(int i = 0; i < horizontal + 2; i++)
-    {
-        tap[i] = (int *)malloc((vertical + 2) * sizeof(int));
-        for(int j = 0; j < vertical + 2; j++)
-            tap[i][j] = 150;
-    }
-    int counter;
-
-
-    tap[secondHorizontal][secondVertical] = 0;
-
-    do
-    {
-        counter = 0;
-        for(int k = 1; k <= horizontal; k++)
-        {
-            for(int l = 1; l <= vertical; l++)
-            {
-                int c = tap[k][l];
-                if(map[k][l] == 0)
-                    if((k != secondHorizontal || l != secondVertical))
-                    {
-                        if((l % 2))
-                            tap[k][l] = Min(tap[k + 1][l], tap[k - 1][l], tap[k][l + 1], tap[k][l - 1], tap[k + 1][l + 1], tap[k + 1][l - 1]) + 1;
-
-                        else
-                            tap[k][l] = Min(tap[k + 1][l], tap[k - 1][l], tap[k][l + 1], tap[k][l - 1], tap[k - 1][l - 1], tap[k - 1][l + 1]) + 1;
-                    }
-                if(c != tap[k][l])
-                    counter++;
-            }
-        }
-
-
-
-    }while(counter != 0);
-
-
-    return tap;
-}
-
-
-void solveMaze(Character* character, int horizontal, int vertical, int map[horizontal + 2][vertical + 2], int firstHorizontal, int firstVertical, int length)
-{
-    if(length == 0)
-        return;
-    int** tap = pathLength(horizontal, vertical, map, firstHorizontal, firstVertical);
-    for(int i = 0; i < length; i++)
-    {
-        int secondHorizontal = character->horizontal;
-        int secondVertical = character->vertical;
-        if(secondVertical % 2)
-        {
-            if(tap[secondHorizontal][secondVertical + 1] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
-            {
-                character->horizontal = secondHorizontal - 1;
-                character->vertical = secondVertical;
-                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
-            }
-            else if(tap[secondHorizontal + 2][secondVertical + 1] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
-            {
-                character->horizontal = secondHorizontal + 1;
-                character->vertical = secondVertical;
-                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, (length - 1));
-            }
-            else if(tap[secondHorizontal + 1][secondVertical] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
-            {
-                character->horizontal = secondHorizontal;
-                character->vertical = secondVertical - 1;
-                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
-            }
-            else if(tap[secondHorizontal + 1][secondVertical + 2] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
-            {
-                character->horizontal = secondHorizontal;
-                character->vertical = secondVertical + 1;
-                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
-            }
-            else if(tap[secondHorizontal][secondVertical] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
-            {
-                character->horizontal = secondHorizontal - 1;
-                character->vertical = secondVertical - 1;
-                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
-            }
-            else if(tap[secondHorizontal][secondVertical + 2] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
-            {
-                character->horizontal = secondHorizontal - 1;
-                character->vertical = secondVertical + 1;
-                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
-            }
-        }
-        else
-        {
-            if(tap[secondHorizontal + 2][secondVertical + 2] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
-            {
-                character->horizontal = secondHorizontal + 1;
-                character->vertical = secondVertical + 1;
-                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
-            }
-            else if(tap[secondHorizontal + 2][secondVertical] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
-            {
-                character->horizontal = secondHorizontal + 1;
-                character->vertical = secondVertical - 1;
-                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
-            }
-            else if(tap[secondHorizontal + 1][secondVertical] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
-            {
-                character->horizontal = secondHorizontal;
-                character->vertical = secondVertical - 1;
-                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
-            }
-            else if(tap[secondHorizontal + 1][secondVertical + 2] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
-            {
-                character->horizontal = secondHorizontal;
-                character->vertical = secondVertical + 1;
-                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
-            }
-            else if(tap[secondHorizontal + 2][secondVertical + 1] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
-            {
-                character->horizontal = secondHorizontal + 1;
-                character->vertical = secondVertical;
-                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
-            }
-            else if(tap[secondHorizontal][secondVertical + 1] == tap[secondHorizontal + 1][secondVertical + 1] - 1)
-            {
-                character->horizontal = secondHorizontal - 1;
-                character->vertical = secondVertical;
-                solveMaze(character, horizontal, vertical, map, firstHorizontal, firstVertical, length - 1);
-            }
-                
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
-
-/*
-زوج
-
-i+1 j+1  SE
-i+1 j-1  SW
-i   j-1  NW
-i   j+1  NE
-i+1 j    S
-i-1 j    N
-
-
-فرد
-i-1 j-1 NW
-i-1 j+1 NE
-i   j-1 SE
-i   j+1 SW
-i+1 j   S
-i-1 j   N
-*/
-
-
-
